@@ -15,7 +15,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+
 private:
     Ui::MainWindow *ui;
+    void InitTreeView();
 };
 #endif // MAINWINDOW_H

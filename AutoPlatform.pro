@@ -31,3 +31,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     image.qrc
 
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../../usr/local/lib/release/ -lnodes
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../../usr/local/lib/debug/ -lnodes
+else:unix: LIBS += -L$$PWD/../../../../../../usr/local/lib/ -lnodes
+
+INCLUDEPATH += $$PWD/../../../../../../usr/local/include
+DEPENDPATH += $$PWD/../../../../../../usr/local/include

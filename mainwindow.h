@@ -19,5 +19,6 @@ public:
 private:
     Ui::MainWindow *ui;
     void InitTreeView();
+    void InitNodeEditor();
 };
 #endif // MAINWINDOW_H

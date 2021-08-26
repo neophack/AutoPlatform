@@ -19,7 +19,7 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>781</width>
+      <width>1061</width>
       <height>541</height>
      </rect>
     </property>
@@ -32,7 +32,7 @@
     <property name="opaqueResize">
      <bool>true</bool>
     </property>
-    <widget class="QTreeView" name="treeView">
+    <widget class="AICCTreeView" name="treeView">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
        <horstretch>0</horstretch>
@@ -51,11 +51,26 @@
        <height>16777215</height>
       </size>
      </property>
+     <property name="dragEnabled">
+      <bool>false</bool>
+     </property>
+     <property name="dragDropOverwriteMode">
+      <bool>true</bool>
+     </property>
+     <property name="dragDropMode">
+      <enum>QAbstractItemView::DragOnly</enum>
+     </property>
+     <property name="defaultDropAction">
+      <enum>Qt::MoveAction</enum>
+     </property>
     </widget>
     <widget class="QWidget" name="verticalLayoutWidget">
      <layout class="QVBoxLayout" name="vl_nodeeditor">
       <property name="spacing">
        <number>0</number>
+      </property>
+      <property name="sizeConstraint">
+       <enum>QLayout::SetNoConstraint</enum>
       </property>
      </layout>
     </widget>
@@ -129,6 +144,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AICCTreeView</class>
+   <extends>QTreeView</extends>
+   <header location="global">aicctreeview.hpp</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

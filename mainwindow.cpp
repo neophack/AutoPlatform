@@ -1,10 +1,15 @@
 #include "mainwindow.h"
-#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 #include <QItemDelegate>
 #include <QStandardItemModel>
-#include <tree_view_readonly_delegate.h>
+#include <TreeViewReadonlyDelegate.h>
+#include <QDropEvent>
+#include <QMimeData>
+#include <QDebug>
+#include <QDrag>
+#include <QGraphicsView>
+#include "aiccflowview.hpp"
 
 #include <nodes/FlowScene>
 #include <nodes/FlowView>
@@ -12,9 +17,9 @@
 #include <nodes/NodeStyle>
 #include <nodes/ConnectionStyle>
 #include <nodes/DataModelRegistry>
-//#include "nodes/internal/TextSourceDataModel.hpp"
-//#include "nodes/internal/TextDisplayDataModel.hpp"
-
+#include <aiccsourcedatamodel.hpp>
+#include <aiccdisplaydatamodel.hpp>
+#include <aiccmodel.hpp>
 
 using QtNodes::DataModelRegistry;
 using QtNodes::FlowScene;
@@ -30,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     this->InitTreeView();
     this->InitNodeEditor();
+    this->setAcceptDrops(true);
 }
 
 MainWindow::~MainWindow()
@@ -40,10 +46,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::InitTreeView()
 {
-    QStandardItemModel* model = new QStandardItemModel(ui->treeView);
+    AICCModel* model = new AICCModel(ui->treeView);
     model->setHorizontalHeaderLabels(QStringList()<<QStringLiteral("资源"));
     QList<QStandardItem*> items_first;
-    //        QStandardItem* item_device,item_ecu,item_drive,item_algorithm,item_signal,item_IO;
     QStandardItem* item_device = new QStandardItem(QIcon(":/res/ticon1.png"),QStringLiteral("设备"));
     QStandardItem* item_ecu = new QStandardItem(QIcon(":/res/ticon1.png"),QStringLiteral("ECU"));
     QStandardItem* item_drive = new QStandardItem(QIcon(":/res/ticon1.png"),QStringLiteral("驱动"));
@@ -58,25 +63,27 @@ void MainWindow::InitTreeView()
     items_first.append(item_signal);
     items_first.append(item_IO);
 
-
     ReadOnlyDelegate* readOnly = new ReadOnlyDelegate(ui->treeView);
 
     for(int i=0;i<items_first.size();i++){
+//        items_first.at(i)->
         model->appendRow(items_first.at(i));
         ui->treeView->setItemDelegateForRow(i,readOnly);
     }
     ui->treeView->setModel(model);
+
+
+
 }
 
 std::shared_ptr<DataModelRegistry> registerDataModels()
 {
     auto ret = std::make_shared<DataModelRegistry>();
-    //  ret->registerModel<TextSourceDataModel>();
-    //  ret->registerModel<TextDisplayDataModel>();
+      ret->registerModel<AICCDisplayDataModel>("结果数据");
+      ret->registerModel<AICCSourceDataModel>("源数据");
     return ret;
 }
 
-//void setNodeEditorStyle(FlowView *fv)
 void setNodeEditorStyle()
 {
     FlowViewStyle::setStyle(
@@ -137,10 +144,24 @@ void MainWindow::InitNodeEditor()
 
     setNodeEditorStyle();
     auto scene = new FlowScene (registerDataModels());
-    auto view = new FlowView(scene);
+    auto view = new AICCFlowView(scene);
+    view->setAcceptDrops(true);
+    view->setDragMode(QGraphicsView::DragMode::NoDrag);
+
 
     ui->vl_nodeeditor->addWidget(view);
     ui->vl_nodeeditor->setContentsMargins(0,0,0,0);
     ui->vl_nodeeditor->setSpacing(0);
+
 }
+
+void MainWindow::startDrag(Qt::DropActions supportedActions)
+{
+    qDebug() << "main windows start drag";
+}
+
+//void MainWindow::dragMoveEvent(QDragMoveEvent *event)
+//{
+//    qDebug() << "main window drag move event";
+//}
 

@@ -28,10 +28,17 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
-        tree_view_readonly_delegate.h
+        TreeViewReadonlyDelegate.h
         image.qrc
-        mainnode.h
-        mainnode.cpp
+        aiccsourcedatamodel.hpp
+        aiccsourcedatamodel.cpp
+        TextData.hpp
+        aiccdisplaydatamodel.hpp
+        aiccdisplaydatamodel.cpp
+        aicctreeview.hpp
+        aiccmodel.hpp
+        aiccflowview.hpp
+
 )
 
 #if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

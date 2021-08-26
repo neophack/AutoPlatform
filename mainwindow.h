@@ -15,6 +15,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+protected:
+    void startDrag(Qt::DropActions supportedActions);
+//    void dragMoveEvent(QDragMoveEvent *e);
 
 private:
     Ui::MainWindow *ui;

@@ -30,20 +30,28 @@ protected:
     void dropEvent(QDropEvent *e) {
         QStringList formats = e->mimeData()->formats();
         qDebug() << "flow view drop" << formats;
-        if(e->mimeData()->hasFormat("Node/NodePtr"))
+        if(e->mimeData()->hasFormat("Data/name"))
         {
-            QVariant varData = e->mimeData()->data("Node/NodePtr");
-            QByteArray byteData = varData.toByteArray();
-            QDataStream stream(&byteData,QIODevice::ReadWrite);
-            qint64 node;
-            stream >> (node);
-            TreeNode* devNode = (TreeNode*)(node);
+            QByteArray itemData = e->mimeData()->data("Data/name");
+            QDataStream dataStream(&itemData,QIODevice::ReadOnly);
 
-            if(devNode)
-                qDebug() << devNode->mText;
+            QString text;
+            dataStream >> text;
 
-            e->setDropAction(Qt::MoveAction);
-            e->accept();
+            qDebug() << "text:"<<text;
+
+            if(e->source() == this)
+            {
+                e->setDropAction(Qt::MoveAction);
+                e->accept();
+            }else {
+                e->acceptProposedAction();
+            }
+
+//            QTreeWidgetItem *item = itemAt(event->pos());
+//            if(item==nullptr) return;
+
+
         }
         else
             e->ignore();

@@ -24,6 +24,7 @@ find_package(NodeEditor REQUIRED)
 
 
 set(PROJECT_SOURCES
+        aicctreewidget.hpp
         main.cpp
         mainwindow.cpp
         mainwindow.h
@@ -35,9 +36,9 @@ set(PROJECT_SOURCES
         TextData.hpp
         aiccdisplaydatamodel.hpp
         aiccdisplaydatamodel.cpp
-        aicctreeview.hpp
         aiccmodel.hpp
         aiccflowview.hpp
+        qtguidrag.hpp
 
 )
 

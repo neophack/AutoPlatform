@@ -2,6 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTreeWidget>
+#include <QString>
+#include "aicctreewidget.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -16,12 +19,13 @@ public:
     ~MainWindow();
 
 protected:
-    void startDrag(Qt::DropActions supportedActions);
+//    void startDrag(Qt::DropActions supportedActions);
 //    void dragMoveEvent(QDragMoveEvent *e);
 
 private:
     Ui::MainWindow *ui;
     void InitTreeView();
     void InitNodeEditor();
+    void setTreeNode(QTreeWidget *tw,const char* ptext,const char* picon);
 };
 #endif // MAINWINDOW_H

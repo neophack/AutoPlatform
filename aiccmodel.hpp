@@ -3,7 +3,7 @@
 
 #include <QStandardItemModel>
 #include <QMimeData>
-#include <QTreeView>
+#include <QTreeWidget>
 
 
 class TreeNode
@@ -20,7 +20,7 @@ public:
 class AICCModel:public QStandardItemModel{
 public:
     AICCModel(){};
-    AICCModel(QTreeView* treeView):QStandardItemModel(treeView){};
+    AICCModel(QTreeWidget* treeWidget):QStandardItemModel(treeWidget){};
 protected:
     Qt::ItemFlags flags(const QModelIndex &index) const
     {

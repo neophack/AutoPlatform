@@ -18,53 +18,46 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
+      <y>10</y>
       <width>1061</width>
-      <height>541</height>
+      <height>531</height>
      </rect>
-    </property>
-    <property name="autoFillBackground">
-     <bool>false</bool>
     </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
     </property>
-    <property name="opaqueResize">
-     <bool>true</bool>
-    </property>
-    <widget class="AICCTreeView" name="treeView">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
+    <widget class="AICCTreeWidget" name="treeWidget">
      <property name="minimumSize">
       <size>
-       <width>260</width>
+       <width>298</width>
        <height>0</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>260</width>
+       <width>300</width>
        <height>16777215</height>
       </size>
      </property>
-     <property name="dragEnabled">
-      <bool>false</bool>
+     <property name="baseSize">
+      <size>
+       <width>300</width>
+       <height>0</height>
+      </size>
      </property>
-     <property name="dragDropOverwriteMode">
+     <property name="dragEnabled">
       <bool>true</bool>
      </property>
      <property name="dragDropMode">
       <enum>QAbstractItemView::DragOnly</enum>
      </property>
-     <property name="defaultDropAction">
-      <enum>Qt::MoveAction</enum>
-     </property>
+     <column>
+      <property name="text">
+       <string notr="true">1</string>
+      </property>
+     </column>
     </widget>
-    <widget class="QWidget" name="verticalLayoutWidget">
+    <widget class="QWidget" name="verticalLayoutWidget_2">
      <layout class="QVBoxLayout" name="vl_nodeeditor">
       <property name="spacing">
        <number>0</number>
@@ -146,9 +139,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>AICCTreeView</class>
-   <extends>QTreeView</extends>
-   <header location="global">aicctreeview.hpp</header>
+   <class>AICCTreeWidget</class>
+   <extends>QTreeWidget</extends>
+   <header location="global">aicctreewidget.hpp</header>
   </customwidget>
  </customwidgets>
  <resources/>

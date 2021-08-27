@@ -50,7 +50,7 @@ void MainWindow::InitTreeView()
     model->setHorizontalHeaderLabels(QStringList()<<QStringLiteral("资源"));
     QList<QStandardItem*> items_first;
     QStandardItem* item_device = new QStandardItem(QIcon(":/res/ticon1.png"),QStringLiteral("设备"));
-    QStandardItem* item_ecu = new QStandardItem(QIcon(":/res/ticon1.png"),QStringLiteral("ECU"));
+    QStandardItem* item_ecu = new QStandardItem(QIcon(":/res/ticvl_nodeeditor1on1.png"),QStringLiteral("ECU"));
     QStandardItem* item_drive = new QStandardItem(QIcon(":/res/ticon1.png"),QStringLiteral("驱动"));
     QStandardItem* item_algorithm = new QStandardItem(QIcon(":/res/ticon1.png"),QStringLiteral("算法"));
     QStandardItem* item_signal = new QStandardItem(QIcon(":/res/ticon1.png"),QStringLiteral("信号"));

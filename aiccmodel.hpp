@@ -12,7 +12,7 @@ public:
     TreeNode(const QString&text = ""):mText(text){}
     ~TreeNode(){}
     QString mText;
-    TreeNode* mParentNode;                          //父节点
+    TreeNode* mParentNode;                                  //父节点
     QList<TreeNode*> mChildNodes;                   //子节点
 };
 

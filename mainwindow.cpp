@@ -145,6 +145,8 @@ void MainWindow::InitNodeEditor()
     view->setDragMode(QGraphicsView::DragMode::NoDrag);
 
 
+
+
     ui->vl_nodeeditor->addWidget(view);
     ui->vl_nodeeditor->setContentsMargins(0,0,0,0);
     ui->vl_nodeeditor->setSpacing(0);

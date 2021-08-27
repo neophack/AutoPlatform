@@ -3,6 +3,7 @@
 
 #include <nodes/FlowView>
 #include <nodes/FlowScene>
+#include <nodes/Node>
 #include <QDebug>
 #include <QDropEvent>
 #include <QStringList>
@@ -13,13 +14,17 @@
 
 using QtNodes::FlowView;
 using QtNodes::FlowScene;
+using QtNodes::Node;
 
 class AICCFlowView : public FlowView
 {
     Q_OBJECT
 public:
     AICCFlowView(){}
-    AICCFlowView(FlowScene *scene):FlowView(scene,Q_NULLPTR){}
+    AICCFlowView(FlowScene *scene):FlowView(scene,Q_NULLPTR)
+    {
+        _scene = scene;
+    }
 
 protected:
     void dragMoveEvent(QDragMoveEvent *e)
@@ -40,6 +45,19 @@ protected:
 
             qDebug() << "text:"<<text;
 
+
+            //--------------------------------------------------------------------
+                auto type = _scene->registry().create("数据源节点");
+                if(type)
+                {
+                    QtNodes::Node& node = _scene->createNode(std::move(type));
+                    QPoint pos = e->pos();
+                    QPointF posView = this->mapToScene(pos);
+                    node.nodeGraphicsObject().setPos(posView);
+                     _scene->nodePlaced(node);
+                }
+
+
             if(e->source() == this)
             {
                 e->setDropAction(Qt::MoveAction);
@@ -56,15 +74,9 @@ protected:
         else
             e->ignore();
     };
-//    void dragLeaveEvent(QDragLeaveEvent *e)
-//    {
-//        qDebug()<<"flow view dragg leave";
-//        e->accept();
-//    };
 
-//    void startDrag(Qt::DropActions supportedActions){
-//        qDebug() << "flow view start drag";
-//    };
+private:
+    FlowScene* _scene;
 };
 
 //}

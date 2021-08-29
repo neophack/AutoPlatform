@@ -1,4 +1,4 @@
-#include "aiccsourcedatamodel.hpp"
+#include "datamodel/aiccsourcedatamodel.hpp"
 
 
 AICCSourceDataModel::AICCSourceDataModel():_lineEdit(new QLineEdit("Default Text"))

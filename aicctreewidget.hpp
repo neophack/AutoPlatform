@@ -8,41 +8,81 @@
 #include <QSplitter>
 #include <QMimeData>
 #include <QDrag>
+#include <QMenu>
+
 
 class AICCTreeWidget : public QTreeWidget
 {
     Q_OBJECT
 public:
-    AICCTreeWidget(QSplitter *parent = nullptr){}
+    AICCTreeWidget(QSplitter *parent = nullptr)
+    {
+        connect(this,&QTreeWidget::customContextMenuRequested,this,&AICCTreeWidget::onTreeWidgetCustomContextMenuRequested);
+    }
 
 protected:
+    /**
+     * 鼠标按下操作
+     * @brief mousePressEvent
+     * @param event
+     */
     void mousePressEvent(QMouseEvent* event)
     {
-        qDebug() << "mouse press";
-        if(event->button()&Qt::LeftButton)
+//        qDebug() << "mouse press";
+        if(event->button() && Qt::LeftButton)
         {
             _selectItem = itemAt(event->pos());
-            QByteArray dataItem;
-            QDataStream dataStream(&dataItem,QIODevice::WriteOnly);
-            dataStream << _selectItem->text(0);
+            if(_selectItem!=Q_NULLPTR && _selectItem->parent()!=Q_NULLPTR)
+            {
+                QDrag* drag = new QDrag(this);
 
-            QMimeData* mimeData = new QMimeData;
-            mimeData->setData("Data/name",dataItem);
+                QByteArray dataItem;
+                QDataStream dataStream(&dataItem,QIODevice::WriteOnly);
+                dataStream << _selectItem->text(0);
 
-//            QtGuiDrag* dragPiamap = new QtGuiDrag(nullptr);
-//            dragPiamap->setShowText(_selectItem->text(0));
-//            QPixmap pixmap = dragPiamap->grab();
+                QMimeData* mimeData = new QMimeData;
+                mimeData->setData("Data/name",dataItem);
 
-            QDrag* drag = new QDrag(this);
-            drag->setMimeData(mimeData);
-            drag->exec(Qt::MoveAction);
-        }
+                //            QtGuiDrag* dragPiamap = new QtGuiDrag(nullptr);
+                //            dragPiamap->setShowText(_selectItem->text(0));
+                //            QPixmap pixmap = dragPiamap->grab();
+
+
+                drag->setMimeData(mimeData);
+                drag->exec(Qt::MoveAction);
+            }
+        } else if(event->button() && Qt::RightButton){
         QTreeWidget::mousePressEvent(event);
+        }
+
     };
-//    void dragMoveEvent(QDragMoveEvent* event)
-//    {
-//        qDebug()<< "drag move";
-//    };
+    /**
+     * 自定义鼠标右键函数
+     * @brief onTreeWidgetCustomContextMenuRequested
+     * @param pos
+     */
+    void onTreeWidgetCustomContextMenuRequested(const QPoint &pos)
+    {
+
+        QModelIndex curIndex = this->indexAt(pos);
+        qDebug() << curIndex.column()<< " " << curIndex.row();
+
+        if(curIndex.isValid())
+        {
+            QMenu menu;
+            //            menu.addAction(tr("增加"),this,&AICCTreeWidget::onActionAdd);
+            menu.addAction(tr("增加"),this,[=](){
+                qDebug()<<"onActionAdd:";
+            } );
+            menu.addSeparator();
+            menu.addAction(tr("删除"),this,[=](){
+                qDebug()<<"onActionDel";
+            });
+            menu.exec(QCursor::pos());
+        }
+
+    }
+
 private:
     QTreeWidgetItem* _selectItem;
 };

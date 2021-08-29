@@ -1,4 +1,4 @@
-#include "aiccdisplaydatamodel.hpp"
+#include "datamodel/aiccdisplaydatamodel.hpp"
 
 AICCDisplayDataModel::AICCDisplayDataModel():_label(new QLabel("Resulting Text"))
 {

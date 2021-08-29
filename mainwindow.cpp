@@ -18,8 +18,8 @@
 #include <nodes/NodeStyle>
 #include <nodes/ConnectionStyle>
 #include <nodes/DataModelRegistry>
-#include <aiccsourcedatamodel.hpp>
-#include <aiccdisplaydatamodel.hpp>
+#include <datamodel/aiccsourcedatamodel.hpp>
+#include <datamodel/aiccdisplaydatamodel.hpp>
 #include <aiccmodel.hpp>
 
 using QtNodes::DataModelRegistry;
@@ -58,18 +58,41 @@ void MainWindow::setTreeNode(QTreeWidget *tw,const char* ptext,const char* picon
 void MainWindow::InitTreeView()
 {
     AICCTreeWidget *tw = ui->treeWidget;
-//    QTreeWidget *tw = ui->treeWidget;
-    tw->setHeaderHidden(true);
     tw->setDragDropMode(QAbstractItemView::DragOnly);
     tw->setDragEnabled(true);
     tw->clear();
 
-    setTreeNode(tw,"shebei",":/res/ticon1.png");
-    setTreeNode(tw,"ECU",":/res/ticon1.png");
-    setTreeNode(tw,"qudong",":/res/ticon1.png");
-    setTreeNode(tw,"suanfa",":/res/ticon1.png");
-    setTreeNode(tw,"xinhao",":/res/ticon1.png");
-    setTreeNode(tw,"IO",":/res/ticon1.png");
+    QTreeWidgetItem* rootGroupSource = new QTreeWidgetItem(tw);
+    rootGroupSource->setText(0,QStringLiteral("数据源"));
+    QTreeWidgetItem* itemSource1 = new QTreeWidgetItem(rootGroupSource);
+    itemSource1->setText(0,"设备");
+    QTreeWidgetItem* itemSource2 = new QTreeWidgetItem(rootGroupSource);
+    itemSource2->setText(0,"ECU");
+
+
+    QTreeWidgetItem* rootGroupProcess = new QTreeWidgetItem(tw);
+    rootGroupProcess->setText(0,QStringLiteral("过程"));
+    QTreeWidgetItem* itemProcess1 = new QTreeWidgetItem(rootGroupProcess);
+    itemProcess1->setText(0,"驱动");
+    QTreeWidgetItem* itemProcess2 = new QTreeWidgetItem(rootGroupProcess);
+    itemProcess2->setText(0,"算法");
+    QTreeWidgetItem* itemProcess3 = new QTreeWidgetItem(rootGroupProcess);
+    itemProcess3->setText(0,"信号");
+    QTreeWidgetItem* itemProcess4 = new QTreeWidgetItem(rootGroupProcess);
+    itemProcess4->setText(0,"IO");
+
+
+    QTreeWidgetItem* rootGroupResult = new QTreeWidgetItem(tw);
+    rootGroupResult->setText(0,QStringLiteral("数据目标"));
+
+
+
+//    setTreeNode(tw,"设备",":/res/ticon1.png");
+//    setTreeNode(tw,"ECU",":/res/ticon1.png");
+//    setTreeNode(tw,"驱动",":/res/ticon1.png");
+//    setTreeNode(tw,"算法",":/res/ticon1.png");
+//    setTreeNode(tw,"信号",":/res/ticon1.png");
+//    setTreeNode(tw,"IO",":/res/ticon1.png");
 }
 
 std::shared_ptr<DataModelRegistry> registerDataModels()

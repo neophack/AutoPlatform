@@ -31,14 +31,14 @@ set(PROJECT_SOURCES
         mainwindow.ui
         TreeViewReadonlyDelegate.h
         image.qrc
-        aiccsourcedatamodel.hpp
+        datamodel/aiccsourcedatamodel.hpp
         aiccsourcedatamodel.cpp
         TextData.hpp
-        aiccdisplaydatamodel.hpp
+        datamodel/aiccdisplaydatamodel.hpp
         aiccdisplaydatamodel.cpp
         aiccmodel.hpp
         aiccflowview.hpp
-        qtguidrag.hpp
+#        qtguidrag.hpp
 
 )
 

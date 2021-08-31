@@ -57,9 +57,8 @@ protected:
 //                     _scene->nodePlaced(node);
 //                }
             //-----------------------------test code-----------------------------------------
-            if(QString::compare(text,"AICCNumberSource")==0)
-                AICCFlowView::createNode(text,e->pos());
-            else if (QString::compare(text,"AICCNumberResult")==0)
+            if(QString::compare(text,"AICCNumberSource")==0 || QString::compare(text,"AICCNumberResult")==0
+                    || QString::compare(text,"AICCAdditionOperation")==0)
                 AICCFlowView::createNode(text,e->pos());
 
 

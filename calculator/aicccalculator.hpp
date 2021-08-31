@@ -16,7 +16,7 @@ using QtNodes::PortType;
 using QtNodes::PortIndex;
 using QtNodes::NodeValidationState;
 
-///
+///节点数据类
 class DecimalData:public NodeData
 {
 public:
@@ -29,6 +29,7 @@ private:
     double _number;
 };
 
+///源数据节点
 class AICCNumberSourceDataModel:public NodeDataModel
 {
     Q_OBJECT
@@ -109,7 +110,7 @@ private:
 
 };
 
-
+///结果数据节点
 class AICCNumberResultDataModel:public NodeDataModel
 {
     Q_OBJECT
@@ -171,6 +172,76 @@ private:
     QLabel *_label;
 };
 
+//--------------------------------计算部分----------------------
+///计算操作数据模型基类
+class MathOperationDataModel:public NodeDataModel
+{
+    Q_OBJECT
+public:
+    virtual ~MathOperationDataModel(){}
+public:
+    unsigned int nPorts(PortType portType) const override
+    {
+        unsigned int result;
+        if(portType == PortType::In)
+            result = 2;
+        else
+            result = 1;
+        return result;
+    }
+    NodeDataType dataType(PortType portType,PortIndex portIndex) const override{return DecimalData().type();}
+    std::shared_ptr<NodeData> outData(PortIndex port) override{return std::static_pointer_cast<NodeData>(_result);}
+    void setInData(std::shared_ptr<NodeData> data,PortIndex portIndex) override
+    {
+        auto numberData = std::dynamic_pointer_cast<DecimalData>(data);
+        if(portIndex==0)
+             _number1 = numberData;
+        else
+            _number2 = numberData;
+        compute();
+    }
+    QWidget *embeddedWidget() override{return nullptr;}
+    NodeValidationState validationState() const override{return modelValidationState;}
+    QString validationMessage() const override {return modelValidationError;}
+protected:
+    virtual void compute() = 0;
 
+protected:
+    std::weak_ptr<DecimalData> _number1;
+    std::weak_ptr<DecimalData> _number2;
+    std::shared_ptr<DecimalData> _result;
+    NodeValidationState modelValidationState = NodeValidationState::Warning;
+    QString modelValidationError = QString("Missing or incorrect inputs");
+};
+
+///加法计算
+class AICCAdditionModel:public MathOperationDataModel
+{
+public:
+    virtual ~AICCAdditionModel(){}
+public:
+    QString caption() const override{return QStringLiteral("加法");}
+    QString name()const override{return QStringLiteral("AICCAdditionOperation");}
+private:
+    void compute() override
+    {
+        PortIndex const outPortIndex = 0;
+        auto n1 = _number1.lock();
+        auto n2 = _number2.lock();
+        if(n1 && n2)
+        {
+            modelValidationState = NodeValidationState::Valid;
+            modelValidationError = QString();
+            _result = std::make_shared<DecimalData>(n1->number()+n2->number());
+        }
+        else
+        {
+            modelValidationState = NodeValidationState::Warning;
+            modelValidationError = QStringLiteral("Missing or incorrect inputs");
+            _result.reset();
+        }
+        Q_EMIT dataUpdated(outPortIndex);
+    }
+};
 
 #endif // AICCCALCULATOR_H

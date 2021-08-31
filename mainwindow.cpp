@@ -82,6 +82,7 @@ void MainWindow::InitTreeView()
     itemProcess2->setText(0,"算法");
     QTreeWidgetItem* itemProcessCalculatorAddition = new QTreeWidgetItem(itemProcess2);
     itemProcessCalculatorAddition->setText(0,"加法");
+    itemProcessCalculatorAddition->setData(0,Qt::UserRole+1,"AICCAdditionOperation");
 
     QTreeWidgetItem* itemProcess3 = new QTreeWidgetItem(rootGroupProcess);
     itemProcess3->setText(0,"信号");
@@ -111,8 +112,9 @@ std::shared_ptr<DataModelRegistry> registerDataModels()
     auto ret = std::make_shared<DataModelRegistry>();
       ret->registerModel<AICCDisplayDataModel>("结果数据");
       ret->registerModel<AICCSourceDataModel>("源数据");
-      ret->registerModel<AICCNumberSourceDataModel>("四则运算源数据");
-      ret->registerModel<AICCNumberResultDataModel>("四则运算结果数据");
+      ret->registerModel<AICCNumberSourceDataModel>("四则运算");
+      ret->registerModel<AICCNumberResultDataModel>("四则运算");
+      ret->registerModel<AICCAdditionModel>("四则运算");
     return ret;
 }
 

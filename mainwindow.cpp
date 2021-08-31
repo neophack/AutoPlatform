@@ -20,6 +20,7 @@
 #include <nodes/DataModelRegistry>
 #include <datamodel/aiccsourcedatamodel.hpp>
 #include <datamodel/aiccdisplaydatamodel.hpp>
+#include <calculator/aicccalculator.hpp>
 #include <aiccmodel.hpp>
 
 using QtNodes::DataModelRegistry;
@@ -68,6 +69,9 @@ void MainWindow::InitTreeView()
     itemSource1->setText(0,"设备");
     QTreeWidgetItem* itemSource2 = new QTreeWidgetItem(rootGroupSource);
     itemSource2->setText(0,"ECU");
+    QTreeWidgetItem* itemSourceCalculator = new QTreeWidgetItem(rootGroupSource);
+    itemSourceCalculator->setText(0,"四则运算源数据");
+    itemSourceCalculator->setData(0,Qt::UserRole+1,"AICCNumberSource");
 
 
     QTreeWidgetItem* rootGroupProcess = new QTreeWidgetItem(tw);
@@ -76,6 +80,9 @@ void MainWindow::InitTreeView()
     itemProcess1->setText(0,"驱动");
     QTreeWidgetItem* itemProcess2 = new QTreeWidgetItem(rootGroupProcess);
     itemProcess2->setText(0,"算法");
+    QTreeWidgetItem* itemProcessCalculatorAddition = new QTreeWidgetItem(itemProcess2);
+    itemProcessCalculatorAddition->setText(0,"加法");
+
     QTreeWidgetItem* itemProcess3 = new QTreeWidgetItem(rootGroupProcess);
     itemProcess3->setText(0,"信号");
     QTreeWidgetItem* itemProcess4 = new QTreeWidgetItem(rootGroupProcess);
@@ -84,6 +91,10 @@ void MainWindow::InitTreeView()
 
     QTreeWidgetItem* rootGroupResult = new QTreeWidgetItem(tw);
     rootGroupResult->setText(0,QStringLiteral("数据目标"));
+    QTreeWidgetItem* itemResultCalculator = new QTreeWidgetItem(rootGroupResult);
+    itemResultCalculator->setText(0,"四则运算结果");
+    itemResultCalculator->setData(0,Qt::UserRole+1,"AICCNumberResult");
+
 
 
 
@@ -100,6 +111,8 @@ std::shared_ptr<DataModelRegistry> registerDataModels()
     auto ret = std::make_shared<DataModelRegistry>();
       ret->registerModel<AICCDisplayDataModel>("结果数据");
       ret->registerModel<AICCSourceDataModel>("源数据");
+      ret->registerModel<AICCNumberSourceDataModel>("四则运算源数据");
+      ret->registerModel<AICCNumberResultDataModel>("四则运算结果数据");
     return ret;
 }
 

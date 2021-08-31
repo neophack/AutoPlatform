@@ -32,12 +32,17 @@ set(PROJECT_SOURCES
         TreeViewReadonlyDelegate.h
         image.qrc
         datamodel/aiccsourcedatamodel.hpp
+        datamodel/additionmodel.hpp
+        datamodel/aiccdisplaydatamodel.hpp
         aiccsourcedatamodel.cpp
         TextData.hpp
-        datamodel/aiccdisplaydatamodel.hpp
+
         aiccdisplaydatamodel.cpp
         aiccmodel.hpp
         aiccflowview.hpp
+
+        calculator/aicccalculator.hpp
+
 #        qtguidrag.hpp
 
 )

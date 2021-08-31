@@ -40,8 +40,17 @@ protected:
                 QDataStream dataStream(&dataItem,QIODevice::WriteOnly);
                 dataStream << _selectItem->text(0);
 
+                QByteArray dataItemName;
+                QDataStream dataStreamName(&dataItemName,QIODevice::WriteOnly);
+                dataStreamName << _selectItem->data(0,Qt::UserRole+1).toString();
+
+                qDebug() << "aicctreewidget.hpp:" << _selectItem->data(0,Qt::UserRole+1).toString();
+
                 QMimeData* mimeData = new QMimeData;
-                mimeData->setData("Data/name",dataItem);
+                mimeData->setData("Data/text",dataItem);
+                //将要生成的flowview节点的名字代入Data/name字段
+                mimeData->setData("Data/name",dataItemName);
+
 
                 //            QtGuiDrag* dragPiamap = new QtGuiDrag(nullptr);
                 //            dragPiamap->setShowText(_selectItem->text(0));
@@ -51,9 +60,10 @@ protected:
                 drag->setMimeData(mimeData);
                 drag->exec(Qt::MoveAction);
             }
-        } else if(event->button() && Qt::RightButton){
-        QTreeWidget::mousePressEvent(event);
         }
+//        else if(event->button() && Qt::RightButton){
+        QTreeWidget::mousePressEvent(event);
+//        }
 
     };
     /**

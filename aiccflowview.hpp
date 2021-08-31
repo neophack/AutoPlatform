@@ -46,16 +46,22 @@ protected:
             qDebug() << "text:"<<text;
 
 
-            //--------------------------------------------------------------------
-                auto type = _scene->registry().create("数据源节点");
-                if(type)
-                {
-                    QtNodes::Node& node = _scene->createNode(std::move(type));
-                    QPoint pos = e->pos();
-                    QPointF posView = this->mapToScene(pos);
-                    node.nodeGraphicsObject().setPos(posView);
-                     _scene->nodePlaced(node);
-                }
+            //----------------------------test code----------------------------------------
+//                auto type = _scene->registry().create("数据源节点");
+//                if(type)
+//                {
+//                    QtNodes::Node& node = _scene->createNode(std::move(type));
+//                    QPoint pos = e->pos();
+//                    QPointF posView = this->mapToScene(pos);
+//                    node.nodeGraphicsObject().setPos(posView);
+//                     _scene->nodePlaced(node);
+//                }
+            //-----------------------------test code-----------------------------------------
+            if(QString::compare(text,"AICCNumberSource")==0)
+                AICCFlowView::createNode(text,e->pos());
+            else if (QString::compare(text,"AICCNumberResult")==0)
+                AICCFlowView::createNode(text,e->pos());
+
 
 
             if(e->source() == this)
@@ -74,6 +80,18 @@ protected:
         else
             e->ignore();
     };
+
+    void createNode(QString const &name,QPoint pos)
+    {
+        auto type = _scene->registry().create(name);
+        if(type){
+            QtNodes::Node &node = _scene->createNode(std::move(type));
+//            QPoint pos = e->pos();
+            QPointF posView = this->mapToScene(pos);
+            node.nodeGraphicsObject().setPos(posView);
+            _scene->nodePlaced(node);
+        }
+    }
 
 private:
     FlowScene* _scene;

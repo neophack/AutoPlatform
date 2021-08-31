@@ -32,18 +32,19 @@ protected:
         if(event->button() && Qt::LeftButton)
         {
             _selectItem = itemAt(event->pos());
-            if(_selectItem!=Q_NULLPTR && _selectItem->parent()!=Q_NULLPTR)
+
+            QByteArray dataItem;
+            QDataStream dataStream(&dataItem,QIODevice::WriteOnly);
+            dataStream << _selectItem->text(0);
+
+            QByteArray dataItemName;
+            QDataStream dataStreamName(&dataItemName,QIODevice::WriteOnly);
+            QString sidata = _selectItem->data(0,Qt::UserRole+1).toString();
+            dataStreamName << sidata;
+
+            if(_selectItem!=Q_NULLPTR && _selectItem->parent()!=Q_NULLPTR && QString::compare(sidata,"")!=0)
             {
                 QDrag* drag = new QDrag(this);
-
-                QByteArray dataItem;
-                QDataStream dataStream(&dataItem,QIODevice::WriteOnly);
-                dataStream << _selectItem->text(0);
-
-                QByteArray dataItemName;
-                QDataStream dataStreamName(&dataItemName,QIODevice::WriteOnly);
-                dataStreamName << _selectItem->data(0,Qt::UserRole+1).toString();
-
                 qDebug() << "aicctreewidget.hpp:" << _selectItem->data(0,Qt::UserRole+1).toString();
 
                 QMimeData* mimeData = new QMimeData;

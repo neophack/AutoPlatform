@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+
     ui->setupUi(this);
     this->InitTreeView();
     this->InitNodeEditor();
@@ -78,11 +79,21 @@ void MainWindow::InitTreeView()
     rootGroupProcess->setText(0,QStringLiteral("过程"));
     QTreeWidgetItem* itemProcess1 = new QTreeWidgetItem(rootGroupProcess);
     itemProcess1->setText(0,"驱动");
+
     QTreeWidgetItem* itemProcess2 = new QTreeWidgetItem(rootGroupProcess);
     itemProcess2->setText(0,"算法");
     QTreeWidgetItem* itemProcessCalculatorAddition = new QTreeWidgetItem(itemProcess2);
     itemProcessCalculatorAddition->setText(0,"加法");
     itemProcessCalculatorAddition->setData(0,Qt::UserRole+1,"AICCAdditionOperation");
+    QTreeWidgetItem* itemProcessCalculatorSubstraction = new QTreeWidgetItem(itemProcess2);
+    itemProcessCalculatorSubstraction->setText(0,"减法");
+    itemProcessCalculatorSubstraction->setData(0,Qt::UserRole+1,"AICCSubtractionOperation");
+    QTreeWidgetItem* itemProcessCalculatorMultiplication = new QTreeWidgetItem(itemProcess2);
+    itemProcessCalculatorMultiplication->setText(0,"乘法");
+    itemProcessCalculatorMultiplication->setData(0,Qt::UserRole+1,"AICCMultiplicationOperation");
+    QTreeWidgetItem* itemProcessCaculatorDivision = new QTreeWidgetItem(itemProcess2);
+    itemProcessCaculatorDivision->setText(0,"除法");
+    itemProcessCaculatorDivision->setData(0,Qt::UserRole+1,"AICCDivisionOperation");
 
     QTreeWidgetItem* itemProcess3 = new QTreeWidgetItem(rootGroupProcess);
     itemProcess3->setText(0,"信号");
@@ -115,6 +126,9 @@ std::shared_ptr<DataModelRegistry> registerDataModels()
       ret->registerModel<AICCNumberSourceDataModel>("四则运算");
       ret->registerModel<AICCNumberResultDataModel>("四则运算");
       ret->registerModel<AICCAdditionModel>("四则运算");
+      ret->registerModel<AICCSubtractionModel>("四则运算");
+      ret->registerModel<AICCMultiplicationModel>("四则运算");
+      ret->registerModel<AICCDivisionModel>("四则运算");
     return ret;
 }
 
@@ -190,14 +204,3 @@ void MainWindow::InitNodeEditor()
     ui->vl_nodeeditor->setSpacing(0);
 
 }
-
-//void MainWindow::startDrag(Qt::DropActions supportedActions)
-//{
-//    qDebug() << "main windows start drag";
-//}
-
-//void MainWindow::dragMoveEvent(QDragMoveEvent *event)
-//{
-//    qDebug() << "main window drag move event";
-//}
-

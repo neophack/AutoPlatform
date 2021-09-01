@@ -57,8 +57,21 @@ public:
     QString caption() const override{return QStringLiteral("四则运算源数据");}
     bool captionVisible() const override{return false;}
     QString name() const override {return QStringLiteral("AICCNumberSource");}
+public:
+    virtual bool portCaptionVisible(PortType portType,PortIndex portIndex) const override{Q_UNUSED(portType);Q_UNUSED(portIndex);return true;}
+    virtual QString portCaption(PortType portType,PortIndex portIndex) const override
+    {
+        switch(portType)
+        {
+        case PortType::Out:
+            return QStringLiteral("输入数据");
+        default:
+            break;
+        }
+        return QString();
+    }
 
-    //public:
+public:
     QJsonObject save() const override
     {
         QJsonObject modelJson = NodeDataModel::save();
@@ -125,6 +138,19 @@ public:
     bool captionVisible() const override {return false;}
     QString name() const override {return QStringLiteral("AICCNumberResult");}
 public:
+    virtual bool portCaptionVisible(PortType portType,PortIndex portIndex) const override{Q_UNUSED(portType);Q_UNUSED(portIndex);return true;}
+    virtual QString portCaption(PortType portType,PortIndex portIndex) const override
+    {
+        switch(portType)
+        {
+        case PortType::In:
+            return QStringLiteral("结果");
+        default:
+            break;
+        }
+        return QString();
+    }
+public:
     unsigned int nPorts(PortType portType) const override
     {
         unsigned int result = 1;
@@ -180,6 +206,7 @@ class MathOperationDataModel:public NodeDataModel
 public:
     virtual ~MathOperationDataModel(){}
 public:
+    virtual bool portCaptionVisible(PortType portType,PortIndex portIndex) const override{Q_UNUSED(portType);Q_UNUSED(portIndex);return true;}
     unsigned int nPorts(PortType portType) const override
     {
         unsigned int result;
@@ -195,7 +222,7 @@ public:
     {
         auto numberData = std::dynamic_pointer_cast<DecimalData>(data);
         if(portIndex==0)
-             _number1 = numberData;
+            _number1 = numberData;
         else
             _number2 = numberData;
         compute();
@@ -222,6 +249,22 @@ public:
 public:
     QString caption() const override{return QStringLiteral("加法");}
     QString name()const override{return QStringLiteral("AICCAdditionOperation");}
+    virtual QString portCaption(PortType portType,PortIndex portIndex) const override
+    {
+        switch(portType)
+        {
+        case PortType::In:
+            if(portIndex==0)
+                return QStringLiteral("被加数");
+            else if(portIndex==1)
+                return QStringLiteral("加数");
+        case PortType::Out:
+            return QStringLiteral("结果");
+        default:
+            break;
+        }
+        return QString();
+    }
 private:
     void compute() override
     {
@@ -244,4 +287,145 @@ private:
     }
 };
 
+///减法计算
+class AICCSubtractionModel:public MathOperationDataModel
+{
+public:
+    virtual ~AICCSubtractionModel(){}
+public:
+    QString caption() const override {return QStringLiteral("减法");}
+    virtual QString portCaption(PortType portType,PortIndex portIndex) const override
+    {
+        switch(portType)
+        {
+        case PortType::In:
+            if(portIndex == 0)
+                return QStringLiteral("被减数");
+            else if(portIndex == 1)
+                return QStringLiteral("减数");
+        case PortType::Out:
+            return QStringLiteral("结果");
+        default:
+            break;
+        }
+        return QString();
+    }
+    QString name() const override {return QStringLiteral("AICCSubtractionOperation");}
+private:
+    void compute() override
+    {
+        PortIndex const outPortIndex = 0;
+        auto n1 = _number1.lock();
+        auto n2 = _number2.lock();
+        if(n1 && n2)
+        {
+            modelValidationState = NodeValidationState::Valid;
+            modelValidationError = QString();
+            _result = std::make_shared<DecimalData>(n1->number()-n2->number());
+        }
+        else
+        {
+            modelValidationState = NodeValidationState::Warning;
+            modelValidationError = QStringLiteral("Missing or incorrect inputs");
+            _result.reset();
+        }
+        Q_EMIT dataUpdated(outPortIndex);
+    }
+};
+
+///乘法计算
+class AICCMultiplicationModel:public MathOperationDataModel
+{
+public:virtual ~AICCMultiplicationModel(){}
+public:
+    QString caption() const override {return QStringLiteral("乘法");}
+    virtual QString portCaption(PortType portType,PortIndex portIndex) const override
+    {
+        switch(portType)
+        {
+        case PortType::In:
+            if(portIndex==0)
+                return QStringLiteral("被乘数");
+            else if(portIndex==1)
+                return QStringLiteral("乘数");
+        case PortType::Out:
+            return QStringLiteral("结果");
+        default:
+            break;
+        }
+        return QString();
+    }
+    QString name() const override{return QStringLiteral("AICCMultiplicationOperation");}
+private:
+    void compute() override
+    {
+        PortIndex const outPortIndex = 0;
+        auto n1 = _number1.lock();
+        auto n2 = _number2.lock();
+        if(n1 && n2)
+        {
+            modelValidationState = NodeValidationState::Valid;
+            modelValidationError = QString();
+            _result = std::make_shared<DecimalData>(n1->number()*n2->number());
+        }
+        else
+        {
+            modelValidationState = NodeValidationState::Warning;
+            modelValidationError = QStringLiteral("Missing or incorrect inputs");
+            _result.reset();
+        }
+        Q_EMIT dataUpdated(outPortIndex);
+    }
+
+};
+
+///除法计算
+class AICCDivisionModel:public MathOperationDataModel
+{
+public:virtual ~AICCDivisionModel(){}
+public:
+    QString caption() const override {return QStringLiteral("除法");}
+    virtual QString portCaption(PortType portType,PortIndex portIndex) const override
+    {
+        switch(portType)
+        {
+        case PortType::In:
+            if(portIndex==0)
+                return QStringLiteral("被除数");
+            else if(portIndex==1)
+                return QStringLiteral("除数");
+        case PortType::Out:
+            return QStringLiteral("结果");
+        default:
+            break;
+        }
+        return QString();
+    }
+    QString name() const override{return QStringLiteral("AICCDivisionOperation");}
+private:
+    void compute() override
+    {
+        PortIndex const outPortIndex = 0;
+        auto n1 = _number1.lock();
+        auto n2 = _number2.lock();
+        if(n1 && n2)
+        {
+            modelValidationState = NodeValidationState::Valid;
+            modelValidationError = QString();
+            _result = std::make_shared<DecimalData>(n1->number()/n2->number());
+        }
+        else
+        {
+            modelValidationState = NodeValidationState::Warning;
+            modelValidationError = QStringLiteral("Missing or incorrect inputs");
+            _result.reset();
+        }
+        Q_EMIT dataUpdated(outPortIndex);
+    }
+};
+
+///求余计算
+
+
 #endif // AICCCALCULATOR_H
+

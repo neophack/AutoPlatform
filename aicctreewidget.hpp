@@ -28,10 +28,10 @@ protected:
      */
     void mousePressEvent(QMouseEvent* event)
     {
-//        qDebug() << "mouse press";
         if(event->button() && Qt::LeftButton)
         {
             _selectItem = itemAt(event->pos());
+            if(_selectItem==Q_NULLPTR) return;
 
             QByteArray dataItem;
             QDataStream dataStream(&dataItem,QIODevice::WriteOnly);
@@ -91,7 +91,6 @@ protected:
             });
             menu.exec(QCursor::pos());
         }
-
     }
 
 private:

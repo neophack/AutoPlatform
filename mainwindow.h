@@ -24,6 +24,7 @@ protected:
 
 private:
     Ui::MainWindow *ui;
+    void createMenu();
     void InitTreeView();
     void InitNodeEditor();
     void setTreeNode(QTreeWidget *tw,const char* ptext,const char* picon);

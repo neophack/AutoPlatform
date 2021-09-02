@@ -45,18 +45,6 @@ protected:
 
             qDebug() << "text:"<<text;
 
-
-            //----------------------------test code----------------------------------------
-//                auto type = _scene->registry().create("数据源节点");
-//                if(type)
-//                {
-//                    QtNodes::Node& node = _scene->createNode(std::move(type));
-//                    QPoint pos = e->pos();
-//                    QPointF posView = this->mapToScene(pos);
-//                    node.nodeGraphicsObject().setPos(posView);
-//                     _scene->nodePlaced(node);
-//                }
-            //-----------------------------test code-----------------------------------------
             if(QString::compare(text,"AICCNumberSource")==0 || QString::compare(text,"AICCNumberResult")==0
                     || QString::compare(text,"AICCAdditionOperation")==0 || QString::compare(text,"AICCSubtractionOperation")==0
                     || QString::compare(text,"AICCMultiplicationOperation")==0 || QString::compare(text,"AICCDivisionOperation")==0)

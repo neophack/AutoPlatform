@@ -35,7 +35,9 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
 
+
     ui->setupUi(this);
+    this->createMenu();
     this->InitTreeView();
     this->InitNodeEditor();
     this->setAcceptDrops(true);
@@ -46,6 +48,11 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::createMenu()
+{
+    connect(ui->actionExit,&QAction::triggered,this,&QWidget::close);
+
+}
 
 void MainWindow::setTreeNode(QTreeWidget *tw,const char* ptext,const char* picon){
     QTreeWidgetItem *pItem = new QTreeWidgetItem();
@@ -107,7 +114,13 @@ void MainWindow::InitTreeView()
     itemResultCalculator->setText(0,"四则运算结果");
     itemResultCalculator->setData(0,Qt::UserRole+1,"AICCNumberResult");
 
-
+    ui->treeWidget->expandAll();
+//    QTreeWidgetItemIterator it(ui->treeWidget);
+//    while(*it)
+//    {
+//        (*it)->setCheckState(0,Qt::Checked);
+//        ++it;
+//    }
 
 
 //    setTreeNode(tw,"设备",":/res/ticon1.png");
@@ -195,9 +208,6 @@ void MainWindow::InitNodeEditor()
     auto view = new AICCFlowView(scene);
     view->setAcceptDrops(true);
     view->setDragMode(QGraphicsView::DragMode::NoDrag);
-
-
-
 
     ui->vl_nodeeditor->addWidget(view);
     ui->vl_nodeeditor->setContentsMargins(0,0,0,0);

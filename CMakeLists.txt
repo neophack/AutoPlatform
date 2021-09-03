@@ -32,7 +32,6 @@ set(PROJECT_SOURCES
         TreeViewReadonlyDelegate.h
         image.qrc
         datamodel/aiccsourcedatamodel.hpp
-        datamodel/additionmodel.hpp
         datamodel/aiccdisplaydatamodel.hpp
         aiccsourcedatamodel.cpp
         TextData.hpp

@@ -1,4 +1,4 @@
-#ifndef NODESOURCEDATAMODEL_H
+﻿#ifndef NODESOURCEDATAMODEL_H
 #define NODESOURCEDATAMODEL_H
 
 #include <QtCore/QObject>

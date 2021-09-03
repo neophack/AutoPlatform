@@ -1,4 +1,4 @@
-#ifndef AICCMODEL_H
+﻿#ifndef AICCMODEL_H
 #define AICCMODEL_H
 
 #include <QStandardItemModel>

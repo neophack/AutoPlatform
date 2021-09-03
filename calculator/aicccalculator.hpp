@@ -1,4 +1,4 @@
-#ifndef AICCCALCULATOR_H
+﻿#ifndef AICCCALCULATOR_H
 #define AICCCALCULATOR_H
 
 #include <nodes/NodeDataModel>

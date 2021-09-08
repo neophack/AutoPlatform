@@ -37,10 +37,20 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     ui->setupUi(this);
+
+//    ui->splitter->setOpaqueResize(false);
+//    ui->splitter->setStretchFactor(0,2);
+//    ui->splitter->setStretchFactor(1,6);
+//    ui->splitter->setStretchFactor(2,2);
+
+
     this->createMenu();
-    this->InitTreeView();
-    this->InitNodeEditor();
+    this->initTreeView();
+    this->initNodeEditor();
     this->setAcceptDrops(true);
+    this->initSplitter();
+    this->initTableWidget();
+
 }
 
 MainWindow::~MainWindow()
@@ -64,9 +74,9 @@ void MainWindow::setTreeNode(QTreeWidget *tw,const char* ptext,const char* picon
     tw->addTopLevelItem(pItem);
 }
 
-void MainWindow::InitTreeView()
+void MainWindow::initTreeView()
 {
-    AICCTreeWidget *tw = ui->treeWidget;
+    AICCTreeWidget *tw = ui->tw_node;
     tw->setDragDropMode(QAbstractItemView::DragOnly);
     tw->setDragEnabled(true);
     tw->clear();
@@ -114,7 +124,7 @@ void MainWindow::InitTreeView()
     itemResultCalculator->setText(0,"四则运算结果");
     itemResultCalculator->setData(0,Qt::UserRole+1,"AICCNumberResult");
 
-    ui->treeWidget->expandAll();
+    ui->tw_node->expandAll();
 //    QTreeWidgetItemIterator it(ui->treeWidget);
 //    while(*it)
 //    {
@@ -200,17 +210,45 @@ void setNodeEditorStyle()
     )");
 }
 
-void MainWindow::InitNodeEditor()
+void MainWindow::initNodeEditor()
 {
-
+//    QTableWidget * tw = ui->tableWidget;
+    QVBoxLayout *vbl = ui->vl_nodeeditor;
     setNodeEditorStyle();
     auto scene = new FlowScene (registerDataModels());
     auto view = new AICCFlowView(scene);
     view->setAcceptDrops(true);
     view->setDragMode(QGraphicsView::DragMode::NoDrag);
+    connect(view,&AICCFlowView::getNodeDataModel,this,[&](NodeDataModel *nodeDataModel)
+    {
+        QTableWidget * tw = ui->tableWidget;
+        tw->setRowCount(0);
+        if(nodeDataModel==Q_NULLPTR) return;
+        tw->setRowCount(tw->rowCount()+1);
+        tw->setItem(0,0,new QTableWidgetItem("caption"));
+        tw->setItem(0,1,new QTableWidgetItem(nodeDataModel->caption()));
 
-    ui->vl_nodeeditor->addWidget(view);
-    ui->vl_nodeeditor->setContentsMargins(0,0,0,0);
-    ui->vl_nodeeditor->setSpacing(0);
+        tw->setRowCount(tw->rowCount()+1);
+        tw->setItem(1,0,new QTableWidgetItem("name"));
+        tw->setItem(1,1,new QTableWidgetItem(nodeDataModel->name()));
 
+        qDebug() << "emit getNodeDataModel";
+    });
+
+    vbl->addWidget(view);
+    vbl->setContentsMargins(0,0,0,0);
+    vbl->setSpacing(0);
+}
+
+void MainWindow::initSplitter()
+{
+    ui->splitter->setStretchFactor(0,0);
+    ui->splitter->setStretchFactor(1,10);
+    ui->splitter->setStretchFactor(2,0);
+}
+
+
+void MainWindow::initTableWidget()
+{
+    ui->tableWidget->verticalHeader()->setHidden(true);
 }

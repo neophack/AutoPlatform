@@ -15,6 +15,10 @@ using QtNodes::NodeDataModel;
 class AICCDisplayDataModel : public NodeDataModel
 {
     Q_OBJECT
+
+    Q_PROPERTY(QString caption READ caption )
+    Q_PROPERTY(QString captionVisible READ captionVisible )
+
 public:
     AICCDisplayDataModel();
     virtual ~AICCDisplayDataModel(){}
@@ -41,6 +45,7 @@ public:
     }
 
     QWidget * embeddedWidget() override{return _label;}
+
 private:
     QLabel *_label;
 };

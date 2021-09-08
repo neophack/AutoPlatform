@@ -8,6 +8,8 @@
 #include <QDropEvent>
 #include <QStringList>
 #include <QMimeData>
+#include <QtCore/QObject>
+#include <QMouseEvent>
 #include "qvariant.h"
 
 #include "aiccmodel.hpp"
@@ -15,16 +17,34 @@
 using QtNodes::FlowView;
 using QtNodes::FlowScene;
 using QtNodes::Node;
+using QtNodes::NodeGraphicsObject;
+using QtNodes::NodeDataModel;
 
 class AICCFlowView : public FlowView
 {
     Q_OBJECT
 public:
-    AICCFlowView(){}
+    AICCFlowView(){
+    }
     AICCFlowView(FlowScene *scene):FlowView(scene,Q_NULLPTR)
     {
         _scene = scene;
+        connect(_scene,&FlowScene::selectionChanged,this,[&]()
+        {
+            auto selectedCount = _scene->selectedNodes().size();
+            if(selectedCount==1)
+            {
+                emit getNodeDataModel(_scene->selectedNodes()[0]->nodeDataModel());
+            }
+            else
+            {
+                emit getNodeDataModel(Q_NULLPTR);
+            }
+        });
     }
+public:
+Q_SIGNALS:
+    void getNodeDataModel(NodeDataModel *nodeDataModel);
 
 protected:
     void dragMoveEvent(QDragMoveEvent *e)
@@ -74,7 +94,6 @@ protected:
         auto type = _scene->registry().create(name);
         if(type){
             QtNodes::Node &node = _scene->createNode(std::move(type));
-//            QPoint pos = e->pos();
             QPointF posView = this->mapToScene(pos);
             node.nodeGraphicsObject().setPos(posView);
             _scene->nodePlaced(node);

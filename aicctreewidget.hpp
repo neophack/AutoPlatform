@@ -9,16 +9,24 @@
 #include <QMimeData>
 #include <QDrag>
 #include <QMenu>
+#include <QVBoxLayout>
 
 
 class AICCTreeWidget : public QTreeWidget
 {
     Q_OBJECT
 public:
-    AICCTreeWidget(QSplitter *parent = nullptr)
+    AICCTreeWidget(QWidget *parent=nullptr)
     {
         connect(this,&QTreeWidget::customContextMenuRequested,this,&AICCTreeWidget::onTreeWidgetCustomContextMenuRequested);
     }
+
+
+
+//    AICCTreeWidget(QSplitter *parent = nullptr)
+//    {
+//        connect(this,&QTreeWidget::customContextMenuRequested,this,&AICCTreeWidget::onTreeWidgetCustomContextMenuRequested);
+//    }
 
 protected:
     /**

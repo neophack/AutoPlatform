@@ -25,8 +25,10 @@ protected:
 private:
     Ui::MainWindow *ui;
     void createMenu();
-    void InitTreeView();
-    void InitNodeEditor();
+    void initTreeView();
+    void initNodeEditor();
+    void initSplitter();
+    void initTableWidget();
     void setTreeNode(QTreeWidget *tw,const char* ptext,const char* picon);
 };
 #endif // MAINWINDOW_H

@@ -24,7 +24,7 @@ protected:
 
 private:
     Ui::MainWindow *ui;
-    void createMenu();
+    void initMenu();
     void initTreeView();
     void initNodeEditor();
     void initSplitter();

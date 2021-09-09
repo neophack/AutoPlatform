@@ -27,10 +27,10 @@ set(PROJECT_SOURCES
         image.qrc
         datamodel/aiccsourcedatamodel.hpp
         datamodel/aiccdisplaydatamodel.hpp
-        aiccsourcedatamodel.cpp
+#        aiccsourcedatamodel.cpp
         TextData.hpp
 
-        aiccdisplaydatamodel.cpp
+#        aiccdisplaydatamodel.cpp
         aiccmodel.hpp
         aiccflowview.hpp
         calculator/aicccalculator.hpp

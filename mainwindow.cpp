@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
 //    ui->splitter->setStretchFactor(2,2);
 
 
-    this->createMenu();
+    this->initMenu();
     this->initTreeView();
     this->initNodeEditor();
     this->setAcceptDrops(true);
@@ -58,10 +58,12 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::createMenu()
+void MainWindow::initMenu()
 {
     connect(ui->actionExit,&QAction::triggered,this,&QWidget::close);
-
+    connect(ui->actionNodeWindow,&QAction::toggled,ui->dw_left,&QDockWidget::setVisible);
+    connect(ui->actionPropertyWindow,&QAction::toggled,ui->dw_right,&QDockWidget::setVisible);
+    connect(ui->actionAbout,&QAction::triggered,this,&QApplication::aboutQt);
 }
 
 void MainWindow::setTreeNode(QTreeWidget *tw,const char* ptext,const char* picon){
@@ -242,9 +244,9 @@ void MainWindow::initNodeEditor()
 
 void MainWindow::initSplitter()
 {
-    ui->splitter->setStretchFactor(0,0);
-    ui->splitter->setStretchFactor(1,10);
-    ui->splitter->setStretchFactor(2,0);
+//    ui->splitter->setStretchFactor(0,0);
+//    ui->splitter->setStretchFactor(1,10);
+//    ui->splitter->setStretchFactor(2,0);
 }
 
 

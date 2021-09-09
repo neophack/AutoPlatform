@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+﻿cmake_minimum_required(VERSION 3.5)
 
 project(AutoPlateform VERSION 0.1 LANGUAGES CXX)
 
@@ -10,6 +10,7 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 
 find_package(QT NAMES QT6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
@@ -36,10 +37,8 @@ set(PROJECT_SOURCES
         calculator/aicccalculator.hpp
 
 )
-
-        add_executable(AutoPlateform
-            ${PROJECT_SOURCES}
-        )
-
+add_executable(AutoPlateform
+    ${PROJECT_SOURCES}
+)
 target_link_libraries(AutoPlateform PRIVATE Qt${QT_VERSION_MAJOR}::Widgets NodeEditor::nodes)
 

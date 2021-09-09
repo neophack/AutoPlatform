@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 #include <QItemDelegate>
@@ -86,45 +86,45 @@ void MainWindow::initTreeView()
     QTreeWidgetItem* rootGroupSource = new QTreeWidgetItem(tw);
     rootGroupSource->setText(0,QStringLiteral("数据源"));
     QTreeWidgetItem* itemSource1 = new QTreeWidgetItem(rootGroupSource);
-    itemSource1->setText(0,"设备");
+    itemSource1->setText(0,QStringLiteral("设备"));
     QTreeWidgetItem* itemSource2 = new QTreeWidgetItem(rootGroupSource);
-    itemSource2->setText(0,"ECU");
+    itemSource2->setText(0, QStringLiteral("ECU"));
     QTreeWidgetItem* itemSourceCalculator = new QTreeWidgetItem(rootGroupSource);
-    itemSourceCalculator->setText(0,"四则运算源数据");
-    itemSourceCalculator->setData(0,Qt::UserRole+1,"AICCNumberSource");
+    itemSourceCalculator->setText(0, QStringLiteral("四则运算源数据"));
+    itemSourceCalculator->setData(0,Qt::UserRole+1, QStringLiteral("AICCNumberSource"));
 
 
     QTreeWidgetItem* rootGroupProcess = new QTreeWidgetItem(tw);
     rootGroupProcess->setText(0,QStringLiteral("过程"));
     QTreeWidgetItem* itemProcess1 = new QTreeWidgetItem(rootGroupProcess);
-    itemProcess1->setText(0,"驱动");
+    itemProcess1->setText(0, QStringLiteral("驱动"));
 
     QTreeWidgetItem* itemProcess2 = new QTreeWidgetItem(rootGroupProcess);
-    itemProcess2->setText(0,"算法");
+    itemProcess2->setText(0, QStringLiteral("算法"));
     QTreeWidgetItem* itemProcessCalculatorAddition = new QTreeWidgetItem(itemProcess2);
-    itemProcessCalculatorAddition->setText(0,"加法");
-    itemProcessCalculatorAddition->setData(0,Qt::UserRole+1,"AICCAdditionOperation");
+    itemProcessCalculatorAddition->setText(0, QStringLiteral("加法"));
+    itemProcessCalculatorAddition->setData(0,Qt::UserRole+1, QStringLiteral("AICCAdditionOperation"));
     QTreeWidgetItem* itemProcessCalculatorSubstraction = new QTreeWidgetItem(itemProcess2);
-    itemProcessCalculatorSubstraction->setText(0,"减法");
-    itemProcessCalculatorSubstraction->setData(0,Qt::UserRole+1,"AICCSubtractionOperation");
+    itemProcessCalculatorSubstraction->setText(0, QStringLiteral("减法"));
+    itemProcessCalculatorSubstraction->setData(0,Qt::UserRole+1, QStringLiteral("AICCSubtractionOperation"));
     QTreeWidgetItem* itemProcessCalculatorMultiplication = new QTreeWidgetItem(itemProcess2);
-    itemProcessCalculatorMultiplication->setText(0,"乘法");
-    itemProcessCalculatorMultiplication->setData(0,Qt::UserRole+1,"AICCMultiplicationOperation");
+    itemProcessCalculatorMultiplication->setText(0, QStringLiteral("乘法"));
+    itemProcessCalculatorMultiplication->setData(0,Qt::UserRole+1, QStringLiteral("AICCMultiplicationOperation"));
     QTreeWidgetItem* itemProcessCaculatorDivision = new QTreeWidgetItem(itemProcess2);
-    itemProcessCaculatorDivision->setText(0,"除法");
-    itemProcessCaculatorDivision->setData(0,Qt::UserRole+1,"AICCDivisionOperation");
+    itemProcessCaculatorDivision->setText(0, QStringLiteral("除法"));
+    itemProcessCaculatorDivision->setData(0,Qt::UserRole+1, QStringLiteral("AICCDivisionOperation"));
 
     QTreeWidgetItem* itemProcess3 = new QTreeWidgetItem(rootGroupProcess);
-    itemProcess3->setText(0,"信号");
+    itemProcess3->setText(0, QStringLiteral("信号"));
     QTreeWidgetItem* itemProcess4 = new QTreeWidgetItem(rootGroupProcess);
-    itemProcess4->setText(0,"IO");
+    itemProcess4->setText(0, QStringLiteral("IO"));
 
 
     QTreeWidgetItem* rootGroupResult = new QTreeWidgetItem(tw);
     rootGroupResult->setText(0,QStringLiteral("数据目标"));
     QTreeWidgetItem* itemResultCalculator = new QTreeWidgetItem(rootGroupResult);
-    itemResultCalculator->setText(0,"四则运算结果");
-    itemResultCalculator->setData(0,Qt::UserRole+1,"AICCNumberResult");
+    itemResultCalculator->setText(0, QStringLiteral("四则运算结果"));
+    itemResultCalculator->setData(0,Qt::UserRole+1, QStringLiteral("AICCNumberResult"));
 
     ui->tw_node->expandAll();
 //    QTreeWidgetItemIterator it(ui->treeWidget);

@@ -18,25 +18,26 @@ find_package(NodeEditor REQUIRED)
 
 
 
-set(PROJECT_SOURCES
-        aicctreewidget.hpp
+set ( PROJECT_SOURCES
         main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
-        TreeViewReadonlyDelegate.h
-        image.qrc
-        datamodel/aiccsourcedatamodel.hpp
-        datamodel/aiccdisplaydatamodel.hpp
-#        aiccsourcedatamodel.cpp
-        TextData.hpp
+        dialogs/mainwindow.h
+        dialogs/mainwindow.cpp
+        dialogs/mainwindow.ui
+        dialogs/projectdialog.h
+        dialogs/projectdialog.cpp
+        dialogs/projectdialog.ui
 
-#        aiccdisplaydatamodel.cpp
+        image.qrc
+        TextData.hpp
+        TreeViewReadonlyDelegate.h
+        aicctreewidget.hpp
         aiccmodel.hpp
         aiccflowview.hpp
         calculator/aicccalculator.hpp
-
+        datamodel/aiccsourcedatamodel.hpp
+        datamodel/aiccdisplaydatamodel.hpp
 )
+
 add_executable(AutoPlateform
     ${PROJECT_SOURCES}
 )

@@ -4,11 +4,15 @@
 #include <QMainWindow>
 #include <QTreeWidget>
 #include <QString>
+#include <dialogs/projectdialog.h>
+#include "stdio.h"
 #include "aicctreewidget.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
+
+
 
 class MainWindow : public QMainWindow
 {
@@ -24,6 +28,8 @@ protected:
 
 private:
     Ui::MainWindow *ui;
+    ProjectDialog *projectDialog;
+//    std::shared_ptr<Ui::ProjectDialog> projectDialog;
     void initMenu();
     void initTreeView();
     void initNodeEditor();

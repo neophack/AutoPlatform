@@ -10,7 +10,6 @@
 #include <QDrag>
 #include <QGraphicsView>
 #include <QString>
-#include "aiccflowview.hpp"
 
 #include <nodes/FlowScene>
 #include <nodes/FlowView>
@@ -22,6 +21,7 @@
 #include <datamodel/aiccdisplaydatamodel.hpp>
 #include <calculator/aicccalculator.hpp>
 #include <aiccmodel.hpp>
+#include <aiccflowview.hpp>
 
 using QtNodes::DataModelRegistry;
 using QtNodes::FlowScene;
@@ -34,8 +34,8 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-
-
+//    projectDialog = std::make_shared<Ui::ProjectDialog>();
+    projectDialog = new ProjectDialog(parent);
     ui->setupUi(this);
 
 //    ui->splitter->setOpaqueResize(false);
@@ -55,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    delete projectDialog;
     delete ui;
 }
 
@@ -64,6 +65,7 @@ void MainWindow::initMenu()
     connect(ui->actionNodeWindow,&QAction::toggled,ui->dw_left,&QDockWidget::setVisible);
     connect(ui->actionPropertyWindow,&QAction::toggled,ui->dw_right,&QDockWidget::setVisible);
     connect(ui->actionAbout,&QAction::triggered,this,&QApplication::aboutQt);
+    connect(ui->actionNewProject,&QAction::triggered,projectDialog,&ProjectDialog::show);
 }
 
 void MainWindow::setTreeNode(QTreeWidget *tw,const char* ptext,const char* picon){

@@ -62,7 +62,7 @@
      <property name="title">
       <string>New</string>
      </property>
-     <addaction name="actionProject"/>
+     <addaction name="actionNewProject"/>
     </widget>
     <addaction name="menuNew"/>
     <addaction name="separator"/>
@@ -369,7 +369,7 @@
     </layout>
    </widget>
   </widget>
-  <action name="actionProject">
+  <action name="actionNewProject">
    <property name="text">
     <string>Project</string>
    </property>

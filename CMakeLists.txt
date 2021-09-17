@@ -12,8 +12,8 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
-find_package(QT NAMES QT6 Qt5 COMPONENTS Widgets REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
+find_package(QT NAMES QT6 Qt5 COMPONENTS Widgets Xml  REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Xml  REQUIRED)
 find_package(NodeEditor REQUIRED)
 
 
@@ -38,5 +38,5 @@ set ( PROJECT_SOURCES
 add_executable(AutoPlateform
     ${PROJECT_SOURCES}
 )
-target_link_libraries(AutoPlateform PRIVATE Qt${QT_VERSION_MAJOR}::Widgets NodeEditor::nodes)
+target_link_libraries(AutoPlateform PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Xml NodeEditor::nodes)
 

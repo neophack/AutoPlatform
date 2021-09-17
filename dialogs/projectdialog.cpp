@@ -90,9 +90,8 @@ void ProjectDialog::initButton()
         {
             if(file.open(QFile::ReadWrite))
             {
-                QDomDocument doc;
-                //write head data
-                QDomProcessingInstruction instruction;
+                writeProjectXml();
+
             }
 
         }
@@ -152,4 +151,11 @@ void ProjectDialog::initStackedSecond()
 {
     connect(ui->le_config1,&QLineEdit::textChanged,this,[&](const QString &str){config1 = str;ui->le_summary_config1->setText(config1);});
     connect(ui->le_config2,&QLineEdit::textChanged,this,[&](const QString &str){config2=str;ui->le_summary_config2->setText(config2);});
+}
+
+void ProjectDialog::writeProjectXml()
+{
+    QDomDocument doc;
+    //write head data
+    QDomProcessingInstruction instruction;
 }

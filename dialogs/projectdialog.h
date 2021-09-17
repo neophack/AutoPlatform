@@ -23,6 +23,7 @@ private:
     void initOpenPath();
     void initStackedFirst();
     void initStackedSecond();
+    void writeProjectXml();
 
 private:
     Ui::ProjectDialog *ui;

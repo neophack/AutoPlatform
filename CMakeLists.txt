@@ -20,12 +20,9 @@ find_package(NodeEditor REQUIRED)
 
 set ( PROJECT_SOURCES
         main.cpp
-        dialogs/mainwindow.h
-        dialogs/mainwindow.cpp
-        dialogs/mainwindow.ui
-        dialogs/projectdialog.h
-        dialogs/projectdialog.cpp
-        dialogs/projectdialog.ui
+        dialogs/mainwindow.h dialogs/mainwindow.cpp dialogs/mainwindow.ui
+        dialogs/projectdialog.h dialogs/projectdialog.cpp dialogs/projectdialog.ui
+        dialogs/editordialog.h dialogs/editordialog.cpp dialogs/editordialog.ui
 
         image.qrc
         TextData.hpp

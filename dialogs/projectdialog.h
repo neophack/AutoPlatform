@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <iostream>
+#include <QFile>
 
 namespace Ui {
 class ProjectDialog;
@@ -23,7 +24,7 @@ private:
     void initOpenPath();
     void initStackedFirst();
     void initStackedSecond();
-    void writeProjectXml();
+    void writeProjectXml(QFile &file);
 
 private:
     Ui::ProjectDialog *ui;

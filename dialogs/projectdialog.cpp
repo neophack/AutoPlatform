@@ -17,11 +17,13 @@ ProjectDialog::ProjectDialog(QWidget *parent) :
     initStackedSecond();
 }
 
+
 ProjectDialog::~ProjectDialog()
 {
     delete ui;
 }
 
+///初始化所有按钮
 void ProjectDialog::initButton()
 {
     ui->pb_project_finish->hide();
@@ -61,50 +63,58 @@ void ProjectDialog::initButton()
 
 
     //finish button event
-    connect(ui->pb_project_finish,&QPushButton::clicked,this,[&]()
+    connect(ui->pb_project_finish,&QPushButton::clicked,this,[&,this]()
     {
 
 
         //create folder
         QDir folder;
-        bool exist = folder.exists(projectPath+"/.ap");
-        if(exist)
+        //        QString fullpath = projectPath+"/"+projectName+"/.ap";
+
+        //创建项目文件夹
+        QString projectFolder = projectPath+"/"+projectName;
+        QString projectConfigFolder = projectFolder+"/.ap";
+
+        bool existProjectFolder = folder.exists(projectFolder);
+        if(existProjectFolder)
         {
             QMessageBox::information(this,tr("create folder"),tr("the folder is existed,please select other path"));
             return;
         }
         else
         {
-            bool ok = folder.mkdir(projectPath+"/.ap");
-            if(!ok)
+            bool pfok = folder.mkdir(projectFolder);
+            if(!pfok)
             {
-                QMessageBox::information(this,tr("create folder"),tr("create folder failed:").append(projectPath+"/.ap"));
+                QMessageBox::information(this,tr("create folder"),tr("create folder failed:").append(projectFolder));
+                return;
+            }
+            //创建配置信息文件夹
+
+            bool pcfok = folder.mkdir(projectConfigFolder);
+            if(!pcfok)
+            {
+                QMessageBox::information(this,tr("create .ap folder"),tr("create .ap folder failed:").append(projectConfigFolder));
                 return;
             }
         }
 
+
         //create project file
-        QFile file(projectPath+"/.ap"+"/project.xml");
+        QFile file(projectConfigFolder+"/project.xml");
         bool file_exist = file.exists();
-        if(!exist)
+        if(!file_exist)
         {
             if(file.open(QFile::ReadWrite))
             {
-                writeProjectXml();
-
+                writeProjectXml(file);
+                this->close();
             }
-
         }
-        else
-        {
-
-        }
-
-
     });
 
 
-    //StackedWidget change event
+    //项目StackedWidget切换事件
     connect(ui->sw_project,&QStackedWidget::currentChanged,this,[&](int currentPage)
     {
         switch(currentPage)
@@ -152,10 +162,28 @@ void ProjectDialog::initStackedSecond()
     connect(ui->le_config1,&QLineEdit::textChanged,this,[&](const QString &str){config1 = str;ui->le_summary_config1->setText(config1);});
     connect(ui->le_config2,&QLineEdit::textChanged,this,[&](const QString &str){config2=str;ui->le_summary_config2->setText(config2);});
 }
-
-void ProjectDialog::writeProjectXml()
+///写入项目配置xml文件
+void ProjectDialog::writeProjectXml(QFile &file)
 {
     QDomDocument doc;
-    //write head data
+    //写入头数据
     QDomProcessingInstruction instruction;
+    instruction=doc.createProcessingInstruction("xml","version=\"1.0\" encoding=\"UTF-8\"");
+    doc.appendChild(instruction);
+    //根节点，记录项目名称
+    QDomElement root = doc.createElement("Project");
+    root.setAttribute("name",projectName);
+    doc.appendChild(root);
+
+    //FlowScene容器，可记录多个FlowScene,默认创建1个FlowScene
+    QDomElement flowScenes = doc.createElement("FlowScenes");
+    root.appendChild(flowScenes);
+    QDomElement mainFlowScene = doc.createElement("FlowScene");
+    mainFlowScene.setAttribute("name","main flow scene");
+    flowScenes.appendChild(mainFlowScene);
+
+    QTextStream out_stream(&file);
+    doc.save(out_stream,4);
+    file.close();
+
 }

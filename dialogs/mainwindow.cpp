@@ -274,6 +274,5 @@ void MainWindow::initToolbar()
     ui->tw_toolbar->setTabText(4,"ROBOT");
     ui->tw_toolbar->setTabText(5,"APPS");
 
-//    ui->tw_toolbar->clear();
-//    ui->tw_toolbar->addTab()
+//    connect(ui->cb_open,&QComboBox::)
 }

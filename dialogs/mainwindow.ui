@@ -373,7 +373,7 @@
    <property name="minimumSize">
     <size>
      <width>416</width>
-     <height>119</height>
+     <height>139</height>
     </size>
    </property>
    <property name="features">
@@ -407,17 +407,17 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>100</height>
+         <height>110</height>
         </size>
        </property>
        <property name="baseSize">
         <size>
          <width>0</width>
-         <height>100</height>
+         <height>110</height>
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true"/>
+        <string notr="true">background:rgb(240, 240, 240)</string>
        </property>
        <property name="currentIndex">
         <number>0</number>
@@ -477,14 +477,55 @@
 ▼</string>
          </property>
         </widget>
-        <widget class="QComboBox" name="comboBox">
+        <widget class="QPushButton" name="pb_open">
          <property name="geometry">
           <rect>
            <x>60</x>
            <y>10</y>
-           <width>86</width>
+           <width>71</width>
            <height>25</height>
           </rect>
+         </property>
+         <property name="text">
+          <string>Open</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../image.qrc">
+           <normaloff>:/res/Open.png</normaloff>:/res/Open.png</iconset>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pb_save">
+         <property name="geometry">
+          <rect>
+           <x>60</x>
+           <y>40</y>
+           <width>71</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Save</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../image.qrc">
+           <normaloff>:/res/Save.png</normaloff>:/res/Save.png</iconset>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pb_print">
+         <property name="geometry">
+          <rect>
+           <x>60</x>
+           <y>70</y>
+           <width>71</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Print</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../image.qrc">
+           <normaloff>:/res/Print.png</normaloff>:/res/Print.png</iconset>
          </property>
         </widget>
        </widget>

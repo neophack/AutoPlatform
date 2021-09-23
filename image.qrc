@@ -4,5 +4,6 @@
         <file>res/New_24.png</file>
         <file>res/Print.png</file>
         <file>res/Save.png</file>
+        <file>res/Open.png</file>
     </qresource>
 </RCC>

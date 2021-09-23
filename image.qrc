@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>res/ticon1.png</file>
         <file>res/New_24.png</file>
+        <file>res/Print.png</file>
+        <file>res/Save.png</file>
     </qresource>
 </RCC>

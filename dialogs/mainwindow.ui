@@ -444,9 +444,9 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>0</y>
-           <width>51</width>
-           <height>41</height>
+           <y>10</y>
+           <width>40</width>
+           <height>40</height>
           </rect>
          </property>
          <property name="text">
@@ -461,6 +461,30 @@
            <width>32</width>
            <height>32</height>
           </size>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>48</y>
+           <width>40</width>
+           <height>35</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>New
+▼</string>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="comboBox">
+         <property name="geometry">
+          <rect>
+           <x>60</x>
+           <y>10</y>
+           <width>86</width>
+           <height>25</height>
+          </rect>
          </property>
         </widget>
        </widget>

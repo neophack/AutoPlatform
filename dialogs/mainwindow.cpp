@@ -50,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->setAcceptDrops(true);
     this->initSplitter();
     this->initTableWidget();
+    this->initToolbar();
 
 }
 
@@ -255,4 +256,14 @@ void MainWindow::initSplitter()
 void MainWindow::initTableWidget()
 {
     ui->tableWidget->verticalHeader()->setHidden(true);
+}
+
+void MainWindow::initToolbar()
+{
+    //
+    QWidget *titleBarWidget = ui->dw_toolbar->titleBarWidget();
+    QWidget *nullTitleBarWidget = new QWidget();
+    ui->dw_toolbar->setTitleBarWidget(nullTitleBarWidget);
+    delete titleBarWidget;
+
 }

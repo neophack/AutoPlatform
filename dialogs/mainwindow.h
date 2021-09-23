@@ -35,6 +35,7 @@ private:
     void initNodeEditor();
     void initSplitter();
     void initTableWidget();
+    void initToolbar();
     void setTreeNode(QTreeWidget *tw,const char* ptext,const char* picon);
 };
 #endif // MAINWINDOW_H

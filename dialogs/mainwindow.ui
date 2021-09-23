@@ -369,7 +369,7 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dockWidget">
+  <widget class="QDockWidget" name="dw_toolbar">
    <property name="minimumSize">
     <size>
      <width>145</width>

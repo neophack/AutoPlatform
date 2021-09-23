@@ -546,7 +546,8 @@ background-repeat:repeat-no-repeat;
 background-image:url(:/res/LibraryBrower.png);
 background-position:top;
 background-origin:content;
-padding-top:8px;</string>
+padding-top:8px;
+padding-bottom:15px;</string>
          </property>
          <property name="text">
           <string>
@@ -601,12 +602,13 @@ background-repeat:repeat-no-repeat;
 background-image:url(:/res/configureRosNetwork_24.png);
 background-position:top;
 background-origin:content;
-padding-top:8px;</string>
+padding-top:8px;
+padding-bottom:15px;</string>
          </property>
          <property name="text">
           <string>
-Labrary
-Browser</string>
+ROS
+Network</string>
          </property>
          <property name="iconSize">
           <size>
@@ -630,12 +632,13 @@ background-repeat:repeat-no-repeat;
 background-image:url(:/res/rosVariableSizeMessages_24.png);
 background-position:top;
 background-origin:content;
-padding-top:8px;</string>
+padding-top:8px;
+padding-bottom:15px;</string>
          </property>
          <property name="text">
           <string>
-Labrary
-Browser</string>
+VariableSize
+Messages</string>
          </property>
          <property name="iconSize">
           <size>
@@ -659,12 +662,12 @@ background-repeat:repeat-no-repeat;
 background-image:url(:/res/Config.png);
 background-position:top;
 background-origin:content;
-padding-top:8px;</string>
+padding-top:8px;
+padding-bottom:15px;</string>
          </property>
          <property name="text">
-          <string>
-Labrary
-Browser</string>
+          <string>Model
+Settings</string>
          </property>
          <property name="iconSize">
           <size>

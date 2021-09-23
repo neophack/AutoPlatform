@@ -9,5 +9,6 @@
         <file>res/configureRosNetwork_24.png</file>
         <file>res/rosVariableSizeMessages_24.png</file>
         <file>res/Config.png</file>
+        <file>res/fast_restart_button.png</file>
     </qresource>
 </RCC>

@@ -51,7 +51,7 @@
      <x>0</x>
      <y>0</y>
      <width>1180</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -372,7 +372,7 @@
   <widget class="QDockWidget" name="dw_toolbar">
    <property name="minimumSize">
     <size>
-     <width>145</width>
+     <width>416</width>
      <height>100</height>
     </size>
    </property>
@@ -403,14 +403,28 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QTabWidget" name="tabWidget">
+      <widget class="QTabWidget" name="tw_toolbar">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
        <property name="currentIndex">
         <number>0</number>
        </property>
        <property name="usesScrollButtons">
         <bool>false</bool>
        </property>
-       <widget class="QWidget" name="tab">
+       <widget class="QWidget" name="tab_simulation">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string/>
+        </property>
         <attribute name="title">
          <string>Tab 1</string>
         </attribute>
@@ -418,6 +432,26 @@
        <widget class="QWidget" name="tab_2">
         <attribute name="title">
          <string>Tab 2</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tab">
+        <attribute name="title">
+         <string>Page</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tab_3">
+        <attribute name="title">
+         <string>Page</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tab_5">
+        <attribute name="title">
+         <string>Page</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tab_6">
+        <attribute name="title">
+         <string>Page</string>
         </attribute>
        </widget>
       </widget>

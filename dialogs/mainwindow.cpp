@@ -260,10 +260,20 @@ void MainWindow::initTableWidget()
 
 void MainWindow::initToolbar()
 {
-    //
+    //隐藏掉上方dock的标题栏
     QWidget *titleBarWidget = ui->dw_toolbar->titleBarWidget();
     QWidget *nullTitleBarWidget = new QWidget();
     ui->dw_toolbar->setTitleBarWidget(nullTitleBarWidget);
     delete titleBarWidget;
 
+    //初始化tab标签
+    ui->tw_toolbar->setTabText(0,"SIMULATION");
+    ui->tw_toolbar->setTabText(1,"DEBUG");
+    ui->tw_toolbar->setTabText(2,"MODELING");
+    ui->tw_toolbar->setTabText(3,"FORMAT");
+    ui->tw_toolbar->setTabText(4,"ROBOT");
+    ui->tw_toolbar->setTabText(5,"APPS");
+
+//    ui->tw_toolbar->clear();
+//    ui->tw_toolbar->addTab()
 }

@@ -6,5 +6,8 @@
         <file>res/Save.png</file>
         <file>res/Open.png</file>
         <file>res/LibraryBrower.png</file>
+        <file>res/Config.png</file>
+        <file>res/configureRosNetwork_24.png</file>
+        <file>res/rosVariableSizeMessages_24.png</file>
     </qresource>
 </RCC>

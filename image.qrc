@@ -13,5 +13,6 @@
         <file>res/Run_24.png</file>
         <file>res/StepBackConfig_24.png</file>
         <file>res/StepForward.png</file>
+        <file>res/DataInspector.png</file>
     </qresource>
 </RCC>

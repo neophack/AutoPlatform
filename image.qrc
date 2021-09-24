@@ -10,5 +10,8 @@
         <file>res/rosVariableSizeMessages_24.png</file>
         <file>res/Config.png</file>
         <file>res/fast_restart_button.png</file>
+        <file>res/Run_24.png</file>
+        <file>res/StepBackConfig_24.png</file>
+        <file>res/StepForward.png</file>
     </qresource>
 </RCC>

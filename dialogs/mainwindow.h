@@ -3,8 +3,31 @@
 
 #include <QMainWindow>
 #include <QTreeWidget>
+#include <QTableWidget>
+#include <QItemDelegate>
+#include <QStandardItemModel>
+#include <TreeViewReadonlyDelegate.h>
+#include <QDropEvent>
+#include <QMimeData>
+#include <QDebug>
+#include <QDrag>
+#include <QGraphicsView>
 #include <QString>
+
+
+#include <nodes/FlowScene>
+#include <nodes/FlowView>
+#include <nodes/FlowViewStyle>
+#include <nodes/NodeStyle>
+#include <nodes/ConnectionStyle>
+#include <nodes/DataModelRegistry>
+#include <datamodel/aiccsourcedatamodel.hpp>
+#include <datamodel/aiccdisplaydatamodel.hpp>
+#include <calculator/aicccalculator.hpp>
+#include <aiccmodel.hpp>
+#include <aiccflowview.hpp>
 #include <dialogs/projectdialog.h>
+#include <dialogs/nodeparametersdialog.h>
 #include "stdio.h"
 #include "aicctreewidget.hpp"
 
@@ -29,10 +52,13 @@ protected:
 private:
     Ui::MainWindow *ui;
     ProjectDialog *projectDialog;
-//    std::shared_ptr<Ui::ProjectDialog> projectDialog;
+    NodeParametersDialog *npDialog;
+
     void initMenu();
     void initTreeView();
     void initNodeEditor();
+    void fillTableData(QTableWidget *tw,const NodeDataModel *nmd);
+
     void initSplitter();
     void initTableWidget();
     void initToolbar();

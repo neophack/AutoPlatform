@@ -10,6 +10,7 @@
 #include <QMimeData>
 #include <QtCore/QObject>
 #include <QMouseEvent>
+#include <QMessageBox>
 #include "qvariant.h"
 
 #include "aiccmodel.hpp"
@@ -41,10 +42,16 @@ public:
                 emit getNodeDataModel(Q_NULLPTR);
             }
         });
+
+        connect(_scene,&FlowScene::nodeDoubleClicked,this,[&](Node& n)
+        {
+            emit nodeDoubleClicked(n);
+        });
     }
 public:
 Q_SIGNALS:
     void getNodeDataModel(NodeDataModel *nodeDataModel);
+    void nodeDoubleClicked(Node& n);
 
 protected:
     void dragMoveEvent(QDragMoveEvent *e)

@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>汽车自动驾驶图形化开发平台</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="enabled">
@@ -356,12 +356,12 @@
        </attribute>
        <column>
         <property name="text">
-         <string>Property</string>
+         <string>属性</string>
         </property>
        </column>
        <column>
         <property name="text">
-         <string>Value</string>
+         <string>值</string>
         </property>
        </column>
       </widget>
@@ -551,7 +551,7 @@ padding-bottom:15px;</string>
          </property>
          <property name="text">
           <string>
-Labrary
+Library
 Browser</string>
          </property>
          <property name="iconSize">
@@ -928,11 +928,6 @@ Inspector</string>
         </attribute>
        </widget>
        <widget class="QWidget" name="tab_5">
-        <attribute name="title">
-         <string>Page</string>
-        </attribute>
-       </widget>
-       <widget class="QWidget" name="tab_6">
         <attribute name="title">
          <string>Page</string>
         </attribute>

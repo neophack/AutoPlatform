@@ -23,6 +23,7 @@ set ( PROJECT_SOURCES
         dialogs/mainwindow.h dialogs/mainwindow.cpp dialogs/mainwindow.ui
         dialogs/projectdialog.h dialogs/projectdialog.cpp dialogs/projectdialog.ui
         dialogs/editordialog.h dialogs/editordialog.cpp dialogs/editordialog.ui
+        dialogs/nodeparametersdialog.h dialogs/nodeparametersdialog.cpp dialogs/nodeparametersdialog.ui
 
         image.qrc
         TextData.hpp

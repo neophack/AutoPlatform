@@ -1,27 +1,8 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QItemDelegate>
-#include <QStandardItemModel>
-#include <TreeViewReadonlyDelegate.h>
-#include <QDropEvent>
-#include <QMimeData>
-#include <QDebug>
-#include <QDrag>
-#include <QGraphicsView>
-#include <QString>
 
-#include <nodes/FlowScene>
-#include <nodes/FlowView>
-#include <nodes/FlowViewStyle>
-#include <nodes/NodeStyle>
-#include <nodes/ConnectionStyle>
-#include <nodes/DataModelRegistry>
-#include <datamodel/aiccsourcedatamodel.hpp>
-#include <datamodel/aiccdisplaydatamodel.hpp>
-#include <calculator/aicccalculator.hpp>
-#include <aiccmodel.hpp>
-#include <aiccflowview.hpp>
+
 
 using QtNodes::DataModelRegistry;
 using QtNodes::FlowScene;
@@ -34,14 +15,10 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-//    projectDialog = std::make_shared<Ui::ProjectDialog>();
     projectDialog = new ProjectDialog(parent);
+    npDialog = new NodeParametersDialog(parent);
     ui->setupUi(this);
 
-//    ui->splitter->setOpaqueResize(false);
-//    ui->splitter->setStretchFactor(0,2);
-//    ui->splitter->setStretchFactor(1,6);
-//    ui->splitter->setStretchFactor(2,2);
 
 
     this->initMenu();
@@ -57,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete projectDialog;
+    delete npDialog;
     delete ui;
 }
 
@@ -167,8 +145,8 @@ void setNodeEditorStyle()
     {
       "FlowViewStyle": {
         "BackgroundColor": [255, 255, 255],
-        "FineGridColor": [245, 245, 230],
-        "CoarseGridColor": [235, 235, 220]
+        "FineGridColor": [255, 255, 255],
+        "CoarseGridColor": [255, 255, 255]
       }
     }
     )");
@@ -205,7 +183,7 @@ void setNodeEditorStyle()
         "SelectedHaloColor": "deepskyblue",
         "HoveredColor": "deepskyblue",
 
-        "LineWidth": 3.0,
+        "LineWidth": 1.0,
         "ConstructionLineWidth": 2.0,
         "PointDiameter": 10.0,
 
@@ -224,29 +202,47 @@ void MainWindow::initNodeEditor()
     auto view = new AICCFlowView(scene);
     view->setAcceptDrops(true);
     view->setDragMode(QGraphicsView::DragMode::NoDrag);
+    //获得节点属性connect
     connect(view,&AICCFlowView::getNodeDataModel,this,[&](NodeDataModel *nodeDataModel)
     {
         QTableWidget * tw = ui->tableWidget;
-        tw->setRowCount(0);
-        if(nodeDataModel==Q_NULLPTR) return;
-        tw->setRowCount(tw->rowCount()+1);
-        tw->setItem(0,0,new QTableWidgetItem("caption"));
-        tw->setItem(0,1,new QTableWidgetItem(nodeDataModel->caption()));
-
-        tw->setRowCount(tw->rowCount()+1);
-        tw->setItem(1,0,new QTableWidgetItem("name"));
-        tw->setItem(1,1,new QTableWidgetItem(nodeDataModel->name()));
-
-        qDebug() << "emit getNodeDataModel";
+        fillTableData(tw,nodeDataModel);
     });
+
+    connect(view,&AICCFlowView::nodeDoubleClicked,this,[&](Node &n)
+    {
+        npDialog->show();
+        QTableWidget *nptw =  npDialog->getTableNodeParameters();
+        fillTableData(nptw,n.nodeDataModel());
+//        qDebug() << "double clicked";
+//            QMessageBox::information(NULL,"Title",n.nodeDataModel()->name(),QMessageBox::Yes | QMessageBox::No,QMessageBox::Yes);
+    });
+
 
     vbl->addWidget(view);
     vbl->setContentsMargins(0,0,0,0);
     vbl->setSpacing(0);
 }
 
+///填充节点属性表格数据
+void MainWindow::fillTableData(QTableWidget *tw,const NodeDataModel *ndm)
+{
+    tw->setRowCount(0);
+    if(ndm==Q_NULLPTR) return;
+    tw->setRowCount(tw->rowCount()+1);
+    tw->setItem(0,0,new QTableWidgetItem("caption"));
+    tw->setItem(0,1,new QTableWidgetItem(ndm->caption()));
+
+    tw->setRowCount(tw->rowCount()+1);
+    tw->setItem(1,0,new QTableWidgetItem("name"));
+    tw->setItem(1,1,new QTableWidgetItem(ndm->name()));
+
+    qDebug() << "emit getNodeDataModel";
+}
+
 void MainWindow::initSplitter()
 {
+//    ui->dw_left->hide();
 //    ui->splitter->setStretchFactor(0,0);
 //    ui->splitter->setStretchFactor(1,10);
 //    ui->splitter->setStretchFactor(2,0);
@@ -267,12 +263,12 @@ void MainWindow::initToolbar()
     delete titleBarWidget;
 
     //初始化tab标签
-    ui->tw_toolbar->setTabText(0,"SIMULATION");
-    ui->tw_toolbar->setTabText(1,"DEBUG");
-    ui->tw_toolbar->setTabText(2,"MODELING");
-    ui->tw_toolbar->setTabText(3,"FORMAT");
-    ui->tw_toolbar->setTabText(4,"ROBOT");
-    ui->tw_toolbar->setTabText(5,"APPS");
+    ui->tw_toolbar->setTabText(0,"编辑器");
+    ui->tw_toolbar->setTabText(1,"编译器");
+    ui->tw_toolbar->setTabText(2,"仿真器");
+    ui->tw_toolbar->setTabText(3,"在线标定");
+    ui->tw_toolbar->setTabText(4,"模块自定义");
+//    ui->tw_toolbar->setTabText(5,"APPS");
 
 //    connect(ui->cb_open,&QComboBox::)
 }

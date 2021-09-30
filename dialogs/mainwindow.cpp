@@ -2,24 +2,15 @@
 #include "ui_mainwindow.h"
 
 
-
-
-using QtNodes::DataModelRegistry;
-using QtNodes::FlowScene;
-using QtNodes::FlowView;
-using QtNodes::FlowViewStyle;
-using QtNodes::NodeStyle;
-using QtNodes::ConnectionStyle;
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     projectDialog = new ProjectDialog(parent);
     npDialog = new NodeParametersDialog(parent);
+    nodeTreeDialog = new NodeTreeDialog(parent);
+    moduleLibrary = new ModuleLibrary();
     ui->setupUi(this);
-
-
 
     this->initMenu();
     this->initTreeView();
@@ -35,7 +26,9 @@ MainWindow::~MainWindow()
 {
     delete projectDialog;
     delete npDialog;
+    delete nodeTreeDialog;
     delete ui;
+    delete moduleLibrary;
 }
 
 void MainWindow::initMenu()
@@ -108,40 +101,64 @@ void MainWindow::initTreeView()
     itemResultCalculator->setData(0,Qt::UserRole+1, QStringLiteral("AICCNumberResult"));
 
     ui->tw_node->expandAll();
-//    QTreeWidgetItemIterator it(ui->treeWidget);
-//    while(*it)
-//    {
-//        (*it)->setCheckState(0,Qt::Checked);
-//        ++it;
-//    }
+    //    QTreeWidgetItemIterator it(ui->treeWidget);
+    //    while(*it)
+    //    {
+    //        (*it)->setCheckState(0,Qt::Checked);
+    //        ++it;
+    //    }
 
 
-//    setTreeNode(tw,"设备",":/res/ticon1.png");
-//    setTreeNode(tw,"ECU",":/res/ticon1.png");
-//    setTreeNode(tw,"驱动",":/res/ticon1.png");
-//    setTreeNode(tw,"算法",":/res/ticon1.png");
-//    setTreeNode(tw,"信号",":/res/ticon1.png");
-//    setTreeNode(tw,"IO",":/res/ticon1.png");
+    //    setTreeNode(tw,"设备",":/res/ticon1.png");
+    //    setTreeNode(tw,"ECU",":/res/ticon1.png");
+    //    setTreeNode(tw,"驱动",":/res/ticon1.png");
+    //    setTreeNode(tw,"算法",":/res/ticon1.png");
+    //    setTreeNode(tw,"信号",":/res/ticon1.png");
+    //    setTreeNode(tw,"IO",":/res/ticon1.png");
 }
 
-std::shared_ptr<DataModelRegistry> registerDataModels()
+std::shared_ptr<DataModelRegistry> MainWindow::registerDataModels()
 {
     auto ret = std::make_shared<DataModelRegistry>();
-      ret->registerModel<AICCDisplayDataModel>("结果数据");
-      ret->registerModel<AICCSourceDataModel>("源数据");
-      ret->registerModel<AICCNumberSourceDataModel>("四则运算");
-      ret->registerModel<AICCNumberResultDataModel>("四则运算");
-      ret->registerModel<AICCAdditionModel>("四则运算");
-      ret->registerModel<AICCSubtractionModel>("四则运算");
-      ret->registerModel<AICCMultiplicationModel>("四则运算");
-      ret->registerModel<AICCDivisionModel>("四则运算");
+    //      ret->registerModel<AICCDisplayDataModel>("结果数据");
+    //      ret->registerModel<AICCSourceDataModel>("源数据");
+    //      ret->registerModel<AICCNumberSourceDataModel>("四则运算");
+    //      ret->registerModel<AICCNumberResultDataModel>("四则运算");
+    //      ret->registerModel<AICCAdditionModel>("四则运算");
+    //      ret->registerModel<AICCSubtractionModel>("四则运算");
+    //      ret->registerModel<AICCMultiplicationModel>("四则运算");
+    //      ret->registerModel<AICCDivisionModel>("四则运算");
+    //    return ret;
+    QStringList files = {"/home/fc/works/QtProjects/AutoPlatform/AutoPlateform/nodeconfig/math.hpp"};
+    moduleLibrary->importFiles(files);
+    std::vector<Invocable> invocableList = moduleLibrary->getInvocableList();
+
+    for(int i=0;i<invocableList.size();i++){
+        const auto &inv = invocableList[i];
+        auto f = [inv](){return std::make_unique<InvocableDataModel>(inv);};
+        //        ret->registerModel<MyDataModel>(f,QString::fromStdString(inv.getName()));
+        ret->registerModel<MyDataModel>(f,"数学计算");
+
+        QSet<QString> category;
+        if(!nodeMap->contains("数学计算")){
+            nodeMap->insert("数学计算", category);
+        }
+        category = nodeMap->value("数学计算");
+        category.insert(QString::fromStdString(inv.getName()));
+
+    }
+
+    //将DataModelRegistry对象赋给NodeTreeDialog窗口
+    //    nodeTreeDialog->setDataModelRegistry(ret.get());
+    nodeTreeDialog->setDataModelRegistry(ret);
+
     return ret;
 }
 
-void setNodeEditorStyle()
+void MainWindow::setNodeEditorStyle()
 {
     FlowViewStyle::setStyle(
-    R"(
+                R"(
     {
       "FlowViewStyle": {
         "BackgroundColor": [255, 255, 255],
@@ -152,7 +169,7 @@ void setNodeEditorStyle()
     )");
 
     NodeStyle::setNodeStyle(
-    R"(
+                R"(
     {
       "NodeStyle": {
         "NormalBoundaryColor": "darkgray",
@@ -174,7 +191,7 @@ void setNodeEditorStyle()
     )");
 
     ConnectionStyle::setConnectionStyle(
-    R"(
+                R"(
     {
       "ConnectionStyle": {
         "ConstructionColor": "gray",
@@ -195,10 +212,10 @@ void setNodeEditorStyle()
 
 void MainWindow::initNodeEditor()
 {
-//    QTableWidget * tw = ui->tableWidget;
+    //设置nodeeditor的scene与view
     QVBoxLayout *vbl = ui->vl_nodeeditor;
-    setNodeEditorStyle();
-    auto scene = new FlowScene (registerDataModels());
+    this->setNodeEditorStyle();
+    auto scene = new FlowScene (this->registerDataModels());
     auto view = new AICCFlowView(scene);
     view->setAcceptDrops(true);
     view->setDragMode(QGraphicsView::DragMode::NoDrag);
@@ -209,19 +226,19 @@ void MainWindow::initNodeEditor()
         fillTableData(tw,nodeDataModel);
     });
 
+    //双击节点显示节点的属性窗口
     connect(view,&AICCFlowView::nodeDoubleClicked,this,[&](Node &n)
     {
         npDialog->show();
         QTableWidget *nptw =  npDialog->getTableNodeParameters();
         fillTableData(nptw,n.nodeDataModel());
-//        qDebug() << "double clicked";
-//            QMessageBox::information(NULL,"Title",n.nodeDataModel()->name(),QMessageBox::Yes | QMessageBox::No,QMessageBox::Yes);
     });
-
 
     vbl->addWidget(view);
     vbl->setContentsMargins(0,0,0,0);
     vbl->setSpacing(0);
+
+
 }
 
 ///填充节点属性表格数据
@@ -242,10 +259,11 @@ void MainWindow::fillTableData(QTableWidget *tw,const NodeDataModel *ndm)
 
 void MainWindow::initSplitter()
 {
-//    ui->dw_left->hide();
-//    ui->splitter->setStretchFactor(0,0);
-//    ui->splitter->setStretchFactor(1,10);
-//    ui->splitter->setStretchFactor(2,0);
+    ui->dw_left->hide();
+    ui->dw_right->hide();
+    //    ui->splitter->setStretchFactor(0,0);
+    //    ui->splitter->setStretchFactor(1,10);
+    //    ui->splitter->setStretchFactor(2,0);
 }
 
 
@@ -268,7 +286,11 @@ void MainWindow::initToolbar()
     ui->tw_toolbar->setTabText(2,"仿真器");
     ui->tw_toolbar->setTabText(3,"在线标定");
     ui->tw_toolbar->setTabText(4,"模块自定义");
-//    ui->tw_toolbar->setTabText(5,"APPS");
+    //    ui->tw_toolbar->setTabText(5,"APPS");
 
-//    connect(ui->cb_open,&QComboBox::)
+    //    connect(ui->cb_open,&QComboBox::)
+    connect(ui->pb_library_browser,&QPushButton::clicked,this,[&]
+    {
+        nodeTreeDialog->show();
+    });
 }

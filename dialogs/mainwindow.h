@@ -28,6 +28,7 @@
 #include <aiccflowview.hpp>
 #include <dialogs/projectdialog.h>
 #include <dialogs/nodeparametersdialog.h>
+#include <dialogs/nodetreedialog.h>
 #include "stdio.h"
 #include "aicctreewidget.hpp"
 
@@ -35,6 +36,12 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+using QtNodes::DataModelRegistry;
+using QtNodes::FlowScene;
+using QtNodes::FlowView;
+using QtNodes::FlowViewStyle;
+using QtNodes::NodeStyle;
+using QtNodes::ConnectionStyle;
 
 
 class MainWindow : public QMainWindow
@@ -53,10 +60,19 @@ private:
     Ui::MainWindow *ui;
     ProjectDialog *projectDialog;
     NodeParametersDialog *npDialog;
+    NodeTreeDialog *nodeTreeDialog;
+
+    //nodeeditor部分
+    ModuleLibrary *moduleLibrary;
+    QMap<QString,QSet<QString>> *nodeMap;
 
     void initMenu();
     void initTreeView();
+    //nodeeditor调用部分
     void initNodeEditor();
+    void setNodeEditorStyle();
+    std::shared_ptr<DataModelRegistry> registerDataModels();
+
     void fillTableData(QTableWidget *tw,const NodeDataModel *nmd);
 
     void initSplitter();

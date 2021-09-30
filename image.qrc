@@ -14,5 +14,12 @@
         <file>res/StepBackConfig_24.png</file>
         <file>res/StepForward.png</file>
         <file>res/DataInspector.png</file>
+        <file>res/left_arrow.png</file>
+        <file>res/right_arrow.png</file>
+        <file>res/browser_search_button.png</file>
+        <file>res/Help_24.png</file>
+        <file>res/NewModel_24.png</file>
+        <file>res/stayOnTopDown.png</file>
+        <file>res/stayOnTopLeft.png</file>
     </qresource>
 </RCC>

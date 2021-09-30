@@ -172,7 +172,8 @@ public:
     std::shared_ptr<NodeData> outData(PortIndex port) override{std::shared_ptr<NodeData> ptr;return ptr;}
     void setInData(std::shared_ptr<NodeData> data,int) override
     {
-        auto numberData = std::dynamic_pointer_cast<DecimalData>(data);
+//        auto numberData = std::dynamic_pointer_cast<DecimalData>(data);
+        auto numberData = std::static_pointer_cast<DecimalData>(data);
         if(numberData)
         {
             modelValidationState = NodeValidationState::Valid;
@@ -220,7 +221,8 @@ public:
     std::shared_ptr<NodeData> outData(PortIndex port) override{return std::static_pointer_cast<NodeData>(_result);}
     void setInData(std::shared_ptr<NodeData> data,PortIndex portIndex) override
     {
-        auto numberData = std::dynamic_pointer_cast<DecimalData>(data);
+//        auto numberData = std::dynamic_pointer_cast<DecimalData>(data);
+        auto numberData = std::static_pointer_cast<DecimalData>(data);
         if(portIndex==0)
             _number1 = numberData;
         else

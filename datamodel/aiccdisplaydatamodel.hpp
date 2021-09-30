@@ -53,7 +53,8 @@ public:
     };
     void setInData(std::shared_ptr<NodeData> data,int) override
     {
-        auto textData = std::dynamic_pointer_cast<TextData>(data);
+//        auto textData = std::dynamic_pointer_cast<TextData>(data);
+        auto textData = std::static_pointer_cast<TextData>(data);
         if(textData)
         {
             _label->setText(textData->text());

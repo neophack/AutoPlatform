@@ -531,7 +531,7 @@
            <normaloff>:/res/Print.png</normaloff>:/res/Print.png</iconset>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="pb_library_browser">
          <property name="geometry">
           <rect>
            <x>150</x>
@@ -967,7 +967,7 @@ Inspector</string>
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>NodeWindow</string>
@@ -978,7 +978,7 @@ Inspector</string>
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>PropertyWindow</string>

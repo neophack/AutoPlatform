@@ -95,7 +95,7 @@ protected:
         else
             e->ignore();
     };
-
+public:
     void createNode(QString const &name,QPoint pos)
     {
         auto type = _scene->registry().create(name);

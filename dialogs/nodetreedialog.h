@@ -5,8 +5,10 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QToolButton>
+#include <QPushButton>
 #include <QSharedPointer>
 #include <QString>
+#include <QTreeWidgetItem>
 #include <iostream>
 #include <list>
 #include <vector>
@@ -23,6 +25,8 @@
 
 using QtNodes::DataModelRegistry;
 
+QToolButton * createToolButton( QString name);
+
 namespace Ui {
 class NodeTreeDialog;
 }
@@ -36,19 +40,27 @@ public:
 
     explicit NodeTreeDialog(QWidget *parent = nullptr);
     ~NodeTreeDialog();
-//    void setDataModelRegistry(DataModelRegistry *pdmr);
-    void setDataModelRegistry(std::shared_ptr<DataModelRegistry> pdmr);
+    void setNodeMap(QMap<QString,QSet<QString>> pnm);
 
-Q_SIGNALS:
-    void filesSelected(const QStringList &selected);
+signals:
+    void nodeDoubleClicked(const QString nodeName);
+//        void emitNodeClicked(bool checked,QString name);
+//    void filesSelected(const QStringList &selected);
+
+private slots:
+    void treeWidgetItemClicked(QTreeWidgetItem *item, int column);
+
+//    void makeToolButtons(QTreeWidgetItem *item,int column );
 
 private:
     void initTreeWidget();
     void initNodeConfig();
 
+
 private:
     Ui::NodeTreeDialog *ui;
-    std::shared_ptr<DataModelRegistry> _dataModelRegistry;
+    QMap<QString,QSet<QString>> _nodeMap;
+//    std::shared_ptr<DataModelRegistry> _dataModelRegistry;
 
 };
 

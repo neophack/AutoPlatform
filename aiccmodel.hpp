@@ -5,7 +5,6 @@
 #include <QMimeData>
 #include <QTreeWidget>
 
-
 class TreeNode
 {
 public:

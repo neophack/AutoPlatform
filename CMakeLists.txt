@@ -12,8 +12,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
-find_package(QT NAMES QT6 Qt5 COMPONENTS Widgets Xml  REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Xml  REQUIRED)
+find_package(QT NAMES QT6 Qt5 COMPONENTS Widgets Xml REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Xml REQUIRED)
 find_package(NodeEditor REQUIRED)
 find_package(LLVM REQUIRED CONFIG)
 find_package(Clang REQUIRED CONFIG)
@@ -34,6 +34,7 @@ set ( PROJECT_SOURCES
         aicctreewidget.hpp
         aiccmodel.hpp
         aiccflowview.hpp
+        aicctoolbutton.hpp
         calculator/aicccalculator.hpp
         datamodel/aiccsourcedatamodel.hpp
         datamodel/aiccdisplaydatamodel.hpp

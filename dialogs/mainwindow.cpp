@@ -29,6 +29,8 @@ MainWindow::~MainWindow()
     delete nodeTreeDialog;
     delete ui;
     delete moduleLibrary;
+    delete _flowScene;
+    delete _aiccFlowView;
 }
 
 void MainWindow::initMenu()
@@ -140,17 +142,17 @@ std::shared_ptr<DataModelRegistry> MainWindow::registerDataModels()
         ret->registerModel<MyDataModel>(f,"数学计算");
 
         QSet<QString> category;
-        if(!nodeMap->contains("数学计算")){
-            nodeMap->insert("数学计算", category);
-        }
-        category = nodeMap->value("数学计算");
+//        if(!nodeMap.contains("数学计算")){
+//            nodeMap.insert("数学计算", category);
+//        }
+        category = nodeMap.value("数学计算");
         category.insert(QString::fromStdString(inv.getName()));
 
+        nodeMap.insert("数学计算",category);
     }
 
-    //将DataModelRegistry对象赋给NodeTreeDialog窗口
-    //    nodeTreeDialog->setDataModelRegistry(ret.get());
-    nodeTreeDialog->setDataModelRegistry(ret);
+
+    nodeTreeDialog->setNodeMap(nodeMap);
 
     return ret;
 }
@@ -217,6 +219,9 @@ void MainWindow::initNodeEditor()
     this->setNodeEditorStyle();
     auto scene = new FlowScene (this->registerDataModels());
     auto view = new AICCFlowView(scene);
+    _flowScene = scene;
+    _aiccFlowView = view;
+
     view->setAcceptDrops(true);
     view->setDragMode(QGraphicsView::DragMode::NoDrag);
     //获得节点属性connect
@@ -232,6 +237,14 @@ void MainWindow::initNodeEditor()
         npDialog->show();
         QTableWidget *nptw =  npDialog->getTableNodeParameters();
         fillTableData(nptw,n.nodeDataModel());
+    });
+
+    //获得点击libarary browser中按钮的事件
+    connect(nodeTreeDialog,&NodeTreeDialog::nodeDoubleClicked,this,[&](QString name){
+        //此处可在view中创建node
+        _aiccFlowView->createNode(name,QPoint(_flowScene->width()/2,_flowScene->height()/2));
+
+        qDebug() << "node tree dialog clicked:" << name << endl;
     });
 
     vbl->addWidget(view);

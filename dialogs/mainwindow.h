@@ -62,9 +62,12 @@ private:
     NodeParametersDialog *npDialog;
     NodeTreeDialog *nodeTreeDialog;
 
+    FlowScene *_flowScene;
+    AICCFlowView *_aiccFlowView;
+
     //nodeeditor部分
     ModuleLibrary *moduleLibrary;
-    QMap<QString,QSet<QString>> *nodeMap;
+    QMap<QString,QSet<QString>> nodeMap;
 
     void initMenu();
     void initTreeView();

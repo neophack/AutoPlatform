@@ -15,6 +15,8 @@
 #include <filesystem>
 #include <algorithm>
 #include "stdio.h"
+#include "controllers/aicctoolbutton.hpp"
+#include "aicctreewidget.hpp"
 
 #include <nodes/DataModelRegistry>
 
@@ -23,9 +25,10 @@
 #include <nodeparser/models.hpp>
 #include <nodeparser/module_library.hpp>
 
+
 using QtNodes::DataModelRegistry;
 
-QToolButton * createToolButton( QString name);
+AICCToolButton * createToolButton( QString name);
 
 namespace Ui {
 class NodeTreeDialog;
@@ -44,23 +47,19 @@ public:
 
 signals:
     void nodeDoubleClicked(const QString nodeName);
-//        void emitNodeClicked(bool checked,QString name);
-//    void filesSelected(const QStringList &selected);
 
 private slots:
     void treeWidgetItemClicked(QTreeWidgetItem *item, int column);
 
-//    void makeToolButtons(QTreeWidgetItem *item,int column );
-
 private:
     void initTreeWidget();
     void initNodeConfig();
+    void makeRootGroupItem(AICCTreeWidget *atw,const QString name,const QString text);
 
 
 private:
     Ui::NodeTreeDialog *ui;
     QMap<QString,QSet<QString>> _nodeMap;
-//    std::shared_ptr<DataModelRegistry> _dataModelRegistry;
 
 };
 

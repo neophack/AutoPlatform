@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 3.5)
+﻿cmake_minimum_required(VERSION 3.12)
 
 project(AutoPlateform VERSION 0.1 LANGUAGES CXX)
 
@@ -10,7 +10,6 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 
 find_package(QT NAMES QT6 Qt5 COMPONENTS Widgets Xml REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Xml REQUIRED)
@@ -34,10 +33,12 @@ set ( PROJECT_SOURCES
         aicctreewidget.hpp
         aiccmodel.hpp
         aiccflowview.hpp
-        aicctoolbutton.hpp
+#        aicctoolbutton.cpp
         calculator/aicccalculator.hpp
         datamodel/aiccsourcedatamodel.hpp
         datamodel/aiccdisplaydatamodel.hpp
+
+        controllers/aicctoolbutton.hpp
 
         nodeparser/invocable.hpp
         nodeparser/invocable_parser.hpp

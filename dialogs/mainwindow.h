@@ -31,6 +31,7 @@
 #include <dialogs/nodetreedialog.h>
 #include "stdio.h"
 #include "aicctreewidget.hpp"
+#include "controllers/aicctoolbutton.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

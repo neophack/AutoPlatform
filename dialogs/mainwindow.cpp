@@ -139,16 +139,13 @@ std::shared_ptr<DataModelRegistry> MainWindow::registerDataModels()
         const auto &inv = invocableList[i];
         auto f = [inv](){return std::make_unique<InvocableDataModel>(inv);};
         //        ret->registerModel<MyDataModel>(f,QString::fromStdString(inv.getName()));
-        ret->registerModel<MyDataModel>(f,"数学计算");
 
+        //math.hpp的内容注册为MathOperations分类的内容
+        ret->registerModel<MyDataModel>(f,"MathOperations");
         QSet<QString> category;
-//        if(!nodeMap.contains("数学计算")){
-//            nodeMap.insert("数学计算", category);
-//        }
-        category = nodeMap.value("数学计算");
+        category = nodeMap.value("MathOperations");
         category.insert(QString::fromStdString(inv.getName()));
-
-        nodeMap.insert("数学计算",category);
+        nodeMap.insert("MathOperations",category);
     }
 
 

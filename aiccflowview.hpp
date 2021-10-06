@@ -72,11 +72,10 @@ protected:
 
             qDebug() << "text:"<<text;
 
-            if(QString::compare(text,"AICCNumberSource")==0 || QString::compare(text,"AICCNumberResult")==0
-                    || QString::compare(text,"AICCAdditionOperation")==0 || QString::compare(text,"AICCSubtractionOperation")==0
-                    || QString::compare(text,"AICCMultiplicationOperation")==0 || QString::compare(text,"AICCDivisionOperation")==0)
+//            if(QString::compare(text,"AICCNumberSource")==0 || QString::compare(text,"AICCNumberResult")==0
+//                    || QString::compare(text,"AICCAdditionOperation")==0 || QString::compare(text,"AICCSubtractionOperation")==0
+//                    || QString::compare(text,"AICCMultiplicationOperation")==0 || QString::compare(text,"AICCDivisionOperation")==0)
                 AICCFlowView::createNode(text,e->pos());
-
 
 
             if(e->source() == this)

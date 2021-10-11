@@ -6,7 +6,7 @@
 #include <QTableWidget>
 #include <QItemDelegate>
 #include <QStandardItemModel>
-#include <TreeViewReadonlyDelegate.h>
+#include <itemreadonlydelegate.h>
 #include <QDropEvent>
 #include <QMimeData>
 #include <QDebug>
@@ -32,6 +32,7 @@
 #include "stdio.h"
 #include "aicctreewidget.hpp"
 #include "controllers/aicctoolbutton.hpp"
+//#include "controllers/aiccbreadcrumbnavigation.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -83,5 +84,6 @@ private:
     void initTableWidget();
     void initToolbar();
     void setTreeNode(QTreeWidget *tw,const char* ptext,const char* picon);
+
 };
 #endif // MAINWINDOW_H

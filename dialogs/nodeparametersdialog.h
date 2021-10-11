@@ -4,6 +4,8 @@
 #include <QDialog>
 #include <QTableWidget>
 
+#include "itemreadonlydelegate.h"
+
 namespace Ui {
 class NodeParametersDialog;
 }

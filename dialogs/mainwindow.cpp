@@ -20,6 +20,11 @@ MainWindow::MainWindow(QWidget *parent)
     this->initTableWidget();
     this->initToolbar();
 
+    //面包屑导航调试代码,同时显示文本与本地图片资源
+//    img{width:20px;height:20px}
+    QString str_navigation = QString("<style>a{text-decoration:none;font-size:15px;vertical-align:VCenter} </style><img src=':/res/breadcrumbNavigation/model_16.png' /><a href='level1' >level1</a><img src=':/res/breadcrumbNavigation/rightArrow_16.png' />&nbsp;&nbsp;<img src=':/res/breadcrumbNavigation/subsystem_16.png'/><a href='level2'>level2</a><img src=':/res/breadcrumbNavigation/rightArrow_16.png'/>&nbsp;");
+    ui->l_breadcrumb_navigation->setText(str_navigation);
+
 }
 
 MainWindow::~MainWindow()
@@ -135,7 +140,7 @@ std::shared_ptr<DataModelRegistry> MainWindow::registerDataModels()
     moduleLibrary->importFiles(files);
     std::vector<Invocable> invocableList = moduleLibrary->getInvocableList();
 
-    for(int i=0;i<invocableList.size();i++){
+    for(long int unsigned i=0;i<invocableList.size();i++){
         const auto &inv = invocableList[i];
         auto f = [inv](){return std::make_unique<InvocableDataModel>(inv);};
         //        ret->registerModel<MyDataModel>(f,QString::fromStdString(inv.getName()));
@@ -271,17 +276,15 @@ void MainWindow::initSplitter()
 {
     ui->dw_left->hide();
     ui->dw_right->hide();
-    //    ui->splitter->setStretchFactor(0,0);
-    //    ui->splitter->setStretchFactor(1,10);
-    //    ui->splitter->setStretchFactor(2,0);
 }
 
-
+///初始化右侧属性表格
 void MainWindow::initTableWidget()
 {
     ui->tableWidget->verticalHeader()->setHidden(true);
 }
 
+///初始化工具条
 void MainWindow::initToolbar()
 {
     //隐藏掉上方dock的标题栏
@@ -296,11 +299,10 @@ void MainWindow::initToolbar()
     ui->tw_toolbar->setTabText(2,"仿真器");
     ui->tw_toolbar->setTabText(3,"在线标定");
     ui->tw_toolbar->setTabText(4,"模块自定义");
-    //    ui->tw_toolbar->setTabText(5,"APPS");
 
-    //    connect(ui->cb_open,&QComboBox::)
     connect(ui->pb_library_browser,&QPushButton::clicked,this,[&]
     {
         nodeTreeDialog->show();
     });
 }
+

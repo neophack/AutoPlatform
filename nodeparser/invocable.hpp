@@ -144,7 +144,7 @@ public:
 
     }
     const Param & getInputParam(unsigned int i) const {
-        int j = 0;
+        unsigned int j = 0;
         for(const auto & p:_paramList) {
             if(p.getDirection()==Param::In ) {
                 if(j==i) return p;
@@ -155,7 +155,7 @@ public:
 
     }
     const Param & getOutputParam(unsigned int i) const {
-        int j = 0;
+        unsigned int j = 0;
         for(const auto & p:_paramList) {
             if(p.getDirection()==Param::Out ) {
                 if(j==i) return p;

@@ -21,5 +21,8 @@
         <file>res/NewModel_24.png</file>
         <file>res/stayOnTopDown.png</file>
         <file>res/stayOnTopLeft.png</file>
+        <file>res/breadcrumbNavigation/model_16.png</file>
+        <file>res/breadcrumbNavigation/rightArrow_16.png</file>
+        <file>res/breadcrumbNavigation/subsystem_16.png</file>
     </qresource>
 </RCC>

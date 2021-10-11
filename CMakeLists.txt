@@ -29,16 +29,16 @@ set ( PROJECT_SOURCES
 
         image.qrc
         TextData.hpp
-        TreeViewReadonlyDelegate.h
+        itemreadonlydelegate.h
         aicctreewidget.hpp
         aiccmodel.hpp
         aiccflowview.hpp
-#        aicctoolbutton.cpp
         calculator/aicccalculator.hpp
         datamodel/aiccsourcedatamodel.hpp
         datamodel/aiccdisplaydatamodel.hpp
 
         controllers/aicctoolbutton.hpp
+        controllers/aiccbreadcrumbnavigation.hpp
 
         nodeparser/invocable.hpp
         nodeparser/invocable_parser.hpp

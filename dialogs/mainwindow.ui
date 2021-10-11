@@ -30,6 +30,21 @@
     </sizepolicy>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="spacing">
+     <number>5</number>
+    </property>
+    <property name="leftMargin">
+     <number>5</number>
+    </property>
+    <property name="topMargin">
+     <number>5</number>
+    </property>
+    <property name="rightMargin">
+     <number>5</number>
+    </property>
+    <property name="bottomMargin">
+     <number>9</number>
+    </property>
     <item>
      <layout class="QVBoxLayout" name="vl_nodeeditor">
       <property name="spacing">
@@ -41,6 +56,43 @@
       <property name="leftMargin">
        <number>0</number>
       </property>
+      <item>
+       <widget class="AICCBreadcrumbNavigation" name="l_breadcrumb_navigation">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>80</height>
+         </size>
+        </property>
+        <property name="sizeIncrement">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="baseSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color:rgb(237, 212, 0)</string>
+        </property>
+        <property name="text">
+         <string>LabelText</string>
+        </property>
+        <property name="textFormat">
+         <enum>Qt::AutoText</enum>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
    </layout>
@@ -989,7 +1041,12 @@ Inspector</string>
   <customwidget>
    <class>AICCTreeWidget</class>
    <extends>QTreeWidget</extends>
-   <header location="global">aicctreewidget.hpp</header>
+   <header>aicctreewidget.hpp</header>
+  </customwidget>
+  <customwidget>
+   <class>AICCBreadcrumbNavigation</class>
+   <extends>QLabel</extends>
+   <header location="global">controllers/aiccbreadcrumbnavigation.hpp</header>
   </customwidget>
  </customwidgets>
  <resources>

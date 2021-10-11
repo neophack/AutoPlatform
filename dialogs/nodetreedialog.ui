@@ -349,7 +349,7 @@
   <customwidget>
    <class>AICCTreeWidget</class>
    <extends>QTreeWidget</extends>
-   <header location="global">aicctreewidget.hpp</header>
+   <header>aicctreewidget.hpp</header>
   </customwidget>
  </customwidgets>
  <resources>

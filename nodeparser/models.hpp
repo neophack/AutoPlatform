@@ -36,14 +36,14 @@ public:
 /// In this example it has no logic.
 
 class MyDataModel : public NodeDataModel {
-Q_OBJECT
+    Q_OBJECT
 private:
     QString _name, _caption;
     std::vector<QString> _in, _out;
 
 public:
     MyDataModel(QString name, QString caption, std::vector<QString> in, std::vector<QString> out) :
-            _name(std::move(name)), _caption(std::move(caption)), _in(std::move(in)), _out(std::move(out)) {}
+        _name(std::move(name)), _caption(std::move(caption)), _in(std::move(in)), _out(std::move(out)) {}
 
     virtual
     ~MyDataModel() {}
@@ -77,12 +77,14 @@ public:
     nPorts(PortType type) const override {
         switch (type) {
 
-            case PortType::None:
-                return 0;
-            case PortType::In:
-                return _in.size();
-            case PortType::Out:
-                return _out.size();
+        case PortType::None:
+            return 0;
+        case PortType::In:
+            return _in.size();
+        case PortType::Out:
+            return _out.size();
+        default:
+            return 0;
         }
     }
 
@@ -91,15 +93,15 @@ public:
         QString port_name;
         switch (type) {
 
-            case PortType::None:
-                port_name = "<none>";
-                break;
-            case PortType::In:
-                port_name = _in[index];
-                break;
-            case PortType::Out:
-                port_name = _out[index];
-                break;
+        case PortType::None:
+            port_name = "<none>";
+            break;
+        case PortType::In:
+            port_name = _in[index];
+            break;
+        case PortType::Out:
+            port_name = _out[index];
+            break;
         }
         //return MyNodeData(port_name).type();
         return NodeDataType{"my_type", _name};
@@ -157,23 +159,23 @@ public:
 class VelocityControlModel : public MyDataModel {
 public:
     VelocityControlModel() : MyDataModel("VelocityControl", "Velocity Control",
-                                         {"CIPV", "target_velocity", "target_distance"}, {"acceleration"}) {}
+    {"CIPV", "target_velocity", "target_distance"}, {"acceleration"}) {}
 };
 
 class EHS3ControlModel : public MyDataModel {
 public:
     EHS3ControlModel() : MyDataModel("VehicleEHS3Control", "红旗 EHS3 底盘控制",
-                                     {"steer_ctrl_req", "steering_angle", "accel_ctrl_req", "acceleration", "gear_req",
-                                      "parking_brake_req"}, {"can_msg"}) {}
+    {"steer_ctrl_req", "steering_angle", "accel_ctrl_req", "acceleration", "gear_req",
+                                     "parking_brake_req"}, {"can_msg"}) {}
 };
 
 class EHS3FeedbackModel : public MyDataModel {
 public:
     EHS3FeedbackModel() : MyDataModel("VehicleEHS3Feedback", "红旗 EHS3 底盘反馈", {"can_msg"},
-                                      {"steer_ctrl_enabled", "steer_takeover", "accel_ctrl_enabled", "accel_takeover",
-                                       "gear", "parking_brake",
-                                       "button_LKS", "button_HWA", "button_ACC_main", "button_ACC_resume",
-                                       "button_ACC_cancel", "button_ACC_up", "button_ACC_down"}) {}
+    {"steer_ctrl_enabled", "steer_takeover", "accel_ctrl_enabled", "accel_takeover",
+                                      "gear", "parking_brake",
+                                      "button_LKS", "button_HWA", "button_ACC_main", "button_ACC_resume",
+                                      "button_ACC_cancel", "button_ACC_up", "button_ACC_down"}) {}
 };
 
 class Radar : public MyDataModel {
@@ -189,16 +191,16 @@ public:
 class ACCState : public MyDataModel {
 public:
     ACCState() : MyDataModel("ACCApp", "ACC 应用",
-                             {"button_main", "button_resume", "button_cancel", "button_up", "button_down",
-                              "accel_ctrl_enabled", "accel_takeover", "gear", "parking_brake"},
-                             {"accel_ctrl_req", "target_distance", "target_velocity", "gear_req",
-                              "parking_brake_req"}) {}
+    {"button_main", "button_resume", "button_cancel", "button_up", "button_down",
+                             "accel_ctrl_enabled", "accel_takeover", "gear", "parking_brake"},
+    {"accel_ctrl_req", "target_distance", "target_velocity", "gear_req",
+                             "parking_brake_req"}) {}
 };
 
 class LKSState : public MyDataModel {
 public:
     LKSState() : MyDataModel("LKSApp", "LKS 应用", {"button_main", "steer_ctrl_enabled", "steer_takeover"},
-                             {"steer_ctrl_req"}) {}
+    {"steer_ctrl_req"}) {}
 };
 
 class LaneCenter : public MyDataModel {
@@ -211,7 +213,7 @@ public:
     Func() : MyDataModel("Add", "Add", {"a", "b"}, {"out"}) {}
 };
 class InvocableDataModel : public NodeDataModel {
-Q_OBJECT
+    Q_OBJECT
 private:
     Invocable _invocable;
 
@@ -247,13 +249,14 @@ public:
     unsigned int
     nPorts(PortType type) const override {
         switch (type) {
-
-            case PortType::None:
-                return 0;
-            case PortType::In:
-                return _invocable.getNumInput();
-            case PortType::Out:
-                return _invocable.getNumOutput() + (_invocable.getReturning().isVoid()? 0 : 1);
+        case PortType::None:
+            return 0;
+        case PortType::In:
+            return _invocable.getNumInput();
+        case PortType::Out:
+            return _invocable.getNumOutput() + (_invocable.getReturning().isVoid()? 0 : 1);
+        default:
+            return 0;
         }
     }
 
@@ -263,23 +266,23 @@ public:
         QString type_name;
         switch (type) {
 
-            case PortType::None:
-                port_name = "<none>";
-                break;
-            case PortType::In:
-                port_name = QString::fromStdString(_invocable.getInputParam(index).getName());
-                type_name = QString::fromStdString(_invocable.getInputParam(index).getType());
-                break;
-            case PortType::Out:
-                if(!_invocable.getReturning().isVoid()) {
-                    if(0 == index)
-                        return NodeDataType{QString::fromStdString(_invocable.getReturning().getType()), "out"};
-                    else
-                        index--;
-                }
-                port_name = QString::fromStdString(_invocable.getOutputParam(index).getName());
-                type_name = QString::fromStdString(_invocable.getOutputParam(index).getType());
-                break;
+        case PortType::None:
+            port_name = "<none>";
+            break;
+        case PortType::In:
+            port_name = QString::fromStdString(_invocable.getInputParam(index).getName());
+            type_name = QString::fromStdString(_invocable.getInputParam(index).getType());
+            break;
+        case PortType::Out:
+            if(!_invocable.getReturning().isVoid()) {
+                if(0 == index)
+                    return NodeDataType{QString::fromStdString(_invocable.getReturning().getType()), "out"};
+                else
+                    index--;
+            }
+            port_name = QString::fromStdString(_invocable.getOutputParam(index).getName());
+            type_name = QString::fromStdString(_invocable.getOutputParam(index).getType());
+            break;
         }
         return NodeDataType{type_name, port_name};
     }

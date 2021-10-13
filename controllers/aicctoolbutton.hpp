@@ -17,7 +17,7 @@ public:
 protected:
     void mousePressEvent(QMouseEvent *e)
     {
-        if(e->button() && Qt::LeftButton){
+        if(e->button() & Qt::LeftButton){
             QByteArray dataItem;
             QDataStream dataStream(&dataItem,QIODevice::WriteOnly);
             dataStream << _nodeName;

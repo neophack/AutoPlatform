@@ -22,8 +22,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     //面包屑导航调试代码,同时显示文本与本地图片资源
 //    img{width:20px;height:20px}
-    QString str_navigation = QString("<style>a{text-decoration:none;font-size:15px;vertical-align:VCenter} </style><img src=':/res/breadcrumbNavigation/model_16.png' /><a href='level1' >level1</a><img src=':/res/breadcrumbNavigation/rightArrow_16.png' />&nbsp;&nbsp;<img src=':/res/breadcrumbNavigation/subsystem_16.png'/><a href='level2'>level2</a><img src=':/res/breadcrumbNavigation/rightArrow_16.png'/>&nbsp;");
-    ui->l_breadcrumb_navigation->setText(str_navigation);
+//    QString str_navigation = QString("<style>a{text-decoration:none;font-size:15px;vertical-align:middle} img{vertical-align:bottom}</style><img src=':/res/breadcrumbNavigation/model_16.png'/><a href='level1' >level1</a><img src=':/res/breadcrumbNavigation/rightArrow_16.png'  />&nbsp;&nbsp;<img src=':/res/breadcrumbNavigation/subsystem_16.png'/><a href='level2'>level2</a><img src=':/res/breadcrumbNavigation/rightArrow_16.png'/>&nbsp;");
+//    ui->l_breadcrumb_navigation->setText(str_navigation);
 
 }
 

@@ -53,6 +53,7 @@ public:
 Q_SIGNALS:
     void getNodeDataModel(NodeDataModel *nodeDataModel);
     void nodeDoubleClicked(Node& n);
+    //该信号需要将view对象以参数方式传递过去使用,否则会有问题
     void checkSubSystemName(const QString &name,const QPoint mousePos,const AICCFlowView *cview);
 
 protected:

@@ -159,8 +159,7 @@ public:
         connect(view,&AICCFlowView::nodeDoubleClicked,this,[&](Node &n){
             //如果为子系统,显示子系统对应的窗口
             if(n.nodeDataModel()->name()=="subsystem::SubSystem"){
-                _currPagePathName += ("/"+n.nodeDataModel()->name());
-                emit notifyCurrentPagePathNameChanged(_currPagePathName);
+                setCurrPagePathName(_currPagePathName+"/"+n.nodeDataModel()->name());
             }
             // 此处要修改为向外发送消息，由主窗口来处理双击后的操作，以调用npDialog
             emit nodeDoubleClicked(n.nodeDataModel(), _currPagePathName);
@@ -185,7 +184,6 @@ public:
         //新增page页面,增加新的路径到路由数据集中,并设置当前页面的路径,通知导航条更新路径
         this->addWidget(view);
         _routeDataMap.insert(_currPagePathName+"/"+pageName,this->count()-1);
-//        _currPagePathName = _currPagePathName + "/"+pageName;
 
         qDebug() << _routeDataMap;
     }
@@ -195,8 +193,11 @@ public:
     }
 
 public:
-    const QMap<QString, int> &routeDataMap() const;
-    void setCurrPagePathName(const QString &newCurrPagePathName);
+    void setCurrPagePathName(const QString &newCurrPagePathName){
+       _currPagePathName = newCurrPagePathName;
+       emit notifyCurrentPagePathNameChanged(_currPagePathName);
+   }
+
 
 Q_SIGNALS:
     //注册完DataModels发送消息
@@ -205,8 +206,6 @@ Q_SIGNALS:
     void getNodeDataModel(NodeDataModel *nodeDataModel);
     //双击节点后发送节点消息到外层，当前是为属性窗口提供信息
     void nodeDoubleClicked(NodeDataModel *nodeDataModel,const QString &pagePathName);
-    //通知FlowView创建节点
-    void notifyCreateNode(const QString nodeName);
 
     //最终改造,_currPagePathName改变时向外通知消息
     void notifyCurrentPagePathNameChanged(const QString &url);
@@ -217,7 +216,6 @@ private:
     QMap<QString,QSet<QString>> _nodeCategoryMap;
     //nodeeditor部分
     ModuleLibrary *_moduleLibrary;
-//    StackedWidgetRouteData *_swRouteData;
 
     //当前page路径名称,形式为"/root/level1/level2"
     QString _currPagePathName;
@@ -226,15 +224,6 @@ private:
 
 };
 
-inline const QMap<QString, int> &AICCStackedWidget::routeDataMap() const
-{
-    return _routeDataMap;
-}
 
-inline void AICCStackedWidget::setCurrPagePathName(const QString &newCurrPagePathName)
-{
-    _currPagePathName = newCurrPagePathName;
-    emit notifyCurrentPagePathNameChanged(_currPagePathName);
-}
 
 #endif // AICCSTACKEDWIDGET_H

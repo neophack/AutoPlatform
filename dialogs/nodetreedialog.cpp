@@ -94,7 +94,7 @@ void NodeTreeDialog::treeWidgetItemClicked(QTreeWidgetItem *item, int column){
 
                 ui->gl_node->addWidget(tb,i/4,i%4,Qt::AlignHCenter);
                 i++;
-                qDebug() << "MathOperations" << _nodeMap["MathOperations"].toList().size() << endl;
+//                qDebug() << "MathOperations" << _nodeMap["MathOperations"].toList().size() << endl;
             }
         }
     }

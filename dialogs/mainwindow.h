@@ -13,7 +13,8 @@
 #include <QDrag>
 #include <QGraphicsView>
 #include <QString>
-
+#include <QStackedLayout>
+#include <QSharedPointer>
 
 #include <nodes/FlowScene>
 #include <nodes/FlowView>
@@ -25,11 +26,13 @@
 #include <datamodel/aiccdisplaydatamodel.hpp>
 #include <calculator/aicccalculator.hpp>
 #include <aiccmodel.hpp>
-#include <aiccflowview.hpp>
+#include <controllers/aiccflowview.hpp>
+#include <controllers/aiccstackedwidget.hpp>
 #include <dialogs/projectdialog.h>
 #include <dialogs/nodeparametersdialog.h>
 #include <dialogs/nodetreedialog.h>
 #include "stdio.h"
+#include "utils.h"
 #include "aicctreewidget.hpp"
 #include "controllers/aicctoolbutton.hpp"
 //#include "controllers/aiccbreadcrumbnavigation.hpp"
@@ -64,19 +67,21 @@ private:
     NodeParametersDialog *npDialog;
     NodeTreeDialog *nodeTreeDialog;
 
-    FlowScene *_flowScene;
-    AICCFlowView *_aiccFlowView;
+//    FlowScene *_flowScene;
+//    AICCFlowView *_aiccFlowView;
 
     //nodeeditor部分
     ModuleLibrary *moduleLibrary;
     QMap<QString,QSet<QString>> nodeMap;
 
+    AICCStackedWidget asw;
+
     void initMenu();
     void initTreeView();
     //nodeeditor调用部分
-    void initNodeEditor();
-    void setNodeEditorStyle();
-    std::shared_ptr<DataModelRegistry> registerDataModels();
+//    void initNodeEditor();
+//    AICCFlowView * makeNewNodeEditorScene();
+//    std::shared_ptr<DataModelRegistry> registerDataModels();
 
     void fillTableData(QTableWidget *tw,const NodeDataModel *nmd);
 
@@ -84,6 +89,9 @@ private:
     void initTableWidget();
     void initToolbar();
     void setTreeNode(QTreeWidget *tw,const char* ptext,const char* picon);
+    void initBreadcrumbNavigation();
+    void initStackedWidget();
+
 
 };
 #endif // MAINWINDOW_H

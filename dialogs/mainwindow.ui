@@ -56,6 +56,9 @@
       <property name="leftMargin">
        <number>0</number>
       </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
       <item>
        <widget class="AICCBreadcrumbNavigation" name="l_breadcrumb_navigation">
         <property name="minimumSize">
@@ -84,6 +87,19 @@
         </property>
         <property name="textFormat">
          <enum>Qt::AutoText</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="AICCStackedWidget" name="sw_flowscene">
+        <property name="acceptDrops">
+         <bool>false</bool>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="currentIndex">
+         <number>-1</number>
         </property>
        </widget>
       </item>
@@ -360,7 +376,7 @@
       <number>9</number>
      </property>
      <item>
-      <widget class="QTableWidget" name="tableWidget">
+      <widget class="QTableWidget" name="tw_nodeProperties">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
@@ -1040,7 +1056,13 @@ Inspector</string>
   <customwidget>
    <class>AICCBreadcrumbNavigation</class>
    <extends>QLabel</extends>
-   <header location="global">controllers/aiccbreadcrumbnavigation.hpp</header>
+   <header>controllers/aiccbreadcrumbnavigation.hpp</header>
+  </customwidget>
+  <customwidget>
+   <class>AICCStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header>controllers/aiccstackedwidget.hpp</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

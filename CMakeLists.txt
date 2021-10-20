@@ -32,13 +32,15 @@ set ( PROJECT_SOURCES
         itemreadonlydelegate.h
         aicctreewidget.hpp
         aiccmodel.hpp
-        aiccflowview.hpp
+        utils.h utils.cpp
         calculator/aicccalculator.hpp
         datamodel/aiccsourcedatamodel.hpp
         datamodel/aiccdisplaydatamodel.hpp
 
         controllers/aicctoolbutton.hpp
         controllers/aiccbreadcrumbnavigation.hpp
+        controllers/aiccflowview.hpp
+        controllers/aiccstackedwidget.hpp
 
         nodeparser/invocable.hpp
         nodeparser/invocable_parser.hpp
@@ -48,6 +50,7 @@ set ( PROJECT_SOURCES
         nodeparser/module_library.cpp
 
         nodeconfig/math.hpp
+        nodeconfig/subsystem.hpp
 )
 
 add_executable(AutoPlateform

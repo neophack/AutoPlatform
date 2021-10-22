@@ -15,6 +15,7 @@
 #include <QString>
 #include <QStackedLayout>
 #include <QSharedPointer>
+#include <fstream>
 
 #include <nodes/FlowScene>
 #include <nodes/FlowView>
@@ -35,6 +36,7 @@
 #include "utils.h"
 #include "aicctreewidget.hpp"
 #include "controllers/aicctoolbutton.hpp"
+#include "nodeparser/source_generator.hpp"
 //#include "controllers/aiccbreadcrumbnavigation.hpp"
 
 QT_BEGIN_NAMESPACE
@@ -91,7 +93,6 @@ private:
     void setTreeNode(QTreeWidget *tw,const char* ptext,const char* picon);
     void initBreadcrumbNavigation();
     void initStackedWidget();
-
 
 };
 #endif // MAINWINDOW_H

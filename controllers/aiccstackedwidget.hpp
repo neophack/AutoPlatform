@@ -156,15 +156,34 @@ public:
         });
 
         //双击节点显示节点的属性窗口
-        connect(view,&AICCFlowView::nodeDoubleClicked,this,[&](Node &n){
+        connect(scene,&FlowScene::nodeDoubleClicked,this,[&](Node &n){
             //如果为子系统,显示子系统对应的窗口
             if(n.nodeDataModel()->name()=="subsystem::SubSystem"){
                 setCurrPagePathName(_currPagePathName+"/"+n.nodeDataModel()->name());
             }
             // 此处要修改为向外发送消息，由主窗口来处理双击后的操作，以调用npDialog
             emit nodeDoubleClicked(n.nodeDataModel(), _currPagePathName);
-
         });
+
+
+        //节点被删除事件响应
+        connect(scene,&FlowScene::nodeDeleted,this,[&](Node &n){
+            // TODO
+            //1:删除当前page下的所有子page
+            //2:当删除的SubSystem中包含子SubSystem时要考虑递归删除
+            //3:删除routeMap中所有的子路径
+
+            //1.获得要删除的子系统的路径
+            QString deletePathName = this->_currPagePathName+"/"+n.nodeDataModel()->name();
+            QMap<QString,int>::iterator it = this->_routeDataMap.begin();
+            while(it!=this->_routeDataMap.end()){
+                QString key = it.key();
+                QStringList qsl = key.split(deletePathName);
+                qDebug() << "delete path name:" << deletePathName << "key:" << key << "qsl:" << qsl;
+                it++;
+            }
+        });
+
 
         //获得节点属性,发送消息至外层继续将节点属性数据传递到主窗口
         connect(view,&AICCFlowView::getNodeDataModel,this,[&](NodeDataModel *nodeDataModel){

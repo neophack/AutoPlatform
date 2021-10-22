@@ -14,6 +14,7 @@
 #include "invocable.hpp"
 #include <filesystem>
 #include <list>
+#include <optional>
 
 class FindInvocableContext {
 private:
@@ -53,6 +54,8 @@ public:
     explicit FindInvocableVisitor(clang::ASTContext *context, FindInvocableContext &findInvocableContext)
             : _context(context), _findContext(findInvocableContext) {}
 
+
+
     bool VisitCXXRecordDecl(clang::CXXRecordDecl *decl) {
         if (!inFile(decl))
             return true;
@@ -60,102 +63,51 @@ public:
         invocable.setType(Invocable::Class);
         invocable.setName(decl->getQualifiedNameAsString());
         invocable.setHeaderFile(_findContext.getHeaderFile().string());
-        const clang::CXXMethodDecl *operatorCall = findOperatorCallDecl(decl);
-        if (!operatorCall)
-            return true;
-        if(parseParamsAndReturn(operatorCall, invocable)) {
+        if(parseFields(decl, invocable)) {
             _findContext.getResult().push_back(invocable);
         }
 
         return true;
     }
 
-    bool VisitFunctionDecl(clang::FunctionDecl *decl) {
-        if (decl->isCXXClassMember() || decl->isCXXInstanceMember())
-            return true;
-        if (!inFile(decl))
-            return true;
-        Invocable invocable;
-        invocable.setType(Invocable::Function);
-        invocable.setName(decl->getQualifiedNameAsString());
-        invocable.setHeaderFile(_findContext.getHeaderFile().string());
-        if(parseParamsAndReturn(decl, invocable)) {
-            _findContext.getResult().push_back(invocable);
-        }
-        return true;
-
-    }
 
 private:
-    static const clang::CXXMethodDecl *findOperatorCallDecl(clang::CXXRecordDecl *decl) {
-        for (const auto *method: decl->methods()) {
-            if (method->getNameAsString() == "operator()" && method->getAccess() == clang::AS_public)
-                return method;
-
-        }
-        return nullptr;
+    std::optional<Param> parseParam(const clang::FieldDecl *field) {
+        if(field->getAccess() != clang::AS_public)
+            return {};
+        Param ret;
+        ret.setName(field->getNameAsString());
+        clang::QualType type = field->getType();
+        const auto *tst = type->getAs<clang::TemplateSpecializationType>();
+        if(!tst)
+            return {};
+        if(!tst->isRecordType())
+            return {};
+        std::string temp_name =  tst->getAs<clang::RecordType>()->getDecl()->getQualifiedNameAsString();
+        if(temp_name == "adas::node::out")
+            ret.setDirection(Param::Out);
+        else if(temp_name == "adas::node::in")
+            ret.setDirection(Param::In);
+        else
+            return {};
+        if(tst->getNumArgs() != 1)
+            return {};
+        if (tst->getArg(0).getKind() != clang::TemplateArgument::Type)
+            return {};
+        ret.setType(tst->getArg(0).getAsType().getAsString());
+        return ret;
     }
-
-    static bool parseParam(const clang::ParmVarDecl *decl, Param &param) {
-        param.setName(decl->getNameAsString());
-        clang::QualType type = decl->getType();
-        if (type->isBuiltinType() || type->isRecordType()) {
-            param.setPassing(Param::Value);
-            param.setDirection(Param::In);
-            param.setType(type.getUnqualifiedType().getAsString());
-            return true;
+    bool parseFields(const clang::CXXRecordDecl *decl, Invocable &invocable) {
+        std::vector<Param> params;
+        for (const auto *field: decl->fields()) {
+            auto param_opt = parseParam(field);
+            if(!param_opt)
+                continue;
+            params.push_back(*param_opt);
         }
-        if (type->isPointerType() || type->isLValueReferenceType()) {
-            if (type->isPointerType())
-                param.setPassing(Param::Pointer);
-            else
-                param.setPassing(Param::Ref);
-            clang::QualType ee = type->getPointeeType();
-            if (!ee->isBuiltinType() && !ee->isRecordType())
-                return false;
-            if (ee.isConstQualified())
-                param.setDirection(Param::In);
-            else
-                param.setDirection(Param::Out);
-            param.setType(ee.getUnqualifiedType().getAsString());
-            return true;
-        }
-        return false;
-    }
-
-    static bool parseReturning(const clang::QualType &returnType, Returning & returning) {
-        if (returnType->isBuiltinType() || returnType->isRecordType()) {
-            returning.setType(returnType.getUnqualifiedType().getAsString());
-            returning.setPassing(Returning::Value);
-            return true;
-        }
-
-        if (returnType->isPointerType() || returnType->isLValueReferenceType()) {
-            if (returnType->isPointerType())
-                returning.setPassing(Returning::Pointer);
-            else
-                returning.setPassing(Returning::Ref);
-            clang::QualType ee = returnType->getPointeeType();
-            if (!ee->isBuiltinType() && !ee->isRecordType())
-                return false;
-            returning.setType(ee.getUnqualifiedType().getAsString());
-            return true;
-        }
-        return false;
-    }
-
-    static bool parseParamsAndReturn(const clang::FunctionDecl *decl, Invocable &invocable) {
-        std::vector<Param> params(decl->getNumParams());
-        for (int i = 0; i < decl->getNumParams(); ++i) {
-            const clang::ParmVarDecl *parmVarDecl = decl->getParamDecl(i);
-            if(!parseParam(parmVarDecl, params[i]))
-                return false;
-        }
-        invocable.setParamList(params);
-        Returning returning;
-        if(!parseReturning(decl->getReturnType(), returning))
+        if(params.empty())
             return false;
-        invocable.setReturning(returning);
+        invocable.setParamList(params);
         return true;
     }
 
@@ -226,7 +178,16 @@ public:
         clang::tooling::FixedCompilationDatabase compilation(".", {});
         clang::tooling::ClangTool tool(compilation, {file.string()});
         tool.appendArgumentsAdjuster(
+                getInsertArgumentAdjuster("-std=c++17",
+                                          clang::tooling::ArgumentInsertPosition::END));
+        tool.appendArgumentsAdjuster(
                 getInsertArgumentAdjuster({"-I", "/home/fc/clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04/lib/clang/12.0.0/include"},
+                                          clang::tooling::ArgumentInsertPosition::END));
+        tool.appendArgumentsAdjuster(
+                getInsertArgumentAdjuster({"-I", "/home/fc/works/CLionProjects/runtime-main/include"},
+                                          clang::tooling::ArgumentInsertPosition::END));
+        tool.appendArgumentsAdjuster(
+                getInsertArgumentAdjuster({"-I", "/usr/include"},
                                           clang::tooling::ArgumentInsertPosition::END));
         tool.appendArgumentsAdjuster(
                 getInsertArgumentAdjuster({"-I", _includePaths.string()},

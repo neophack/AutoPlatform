@@ -2,63 +2,70 @@
 #define MATH_HPP
 #include <cmath>
 #include <string>
+#include <chrono>
+#include <adas/node.hpp>
+
 namespace math {
-    inline double Add(double inputVal1, double inputVal2) {
-        return inputVal1 + inputVal2;
+using namespace std::chrono_literals;
+using namespace adas::node;
+
+///加法运算
+class add{
+public:
+    in<double> in1{0.0f,[this](){
+            out1(in1.get() + in2.get());
+                   }};
+    in<double> in2{0.0f,[this](){
+            out1(in1.get() + in2.get());
+                   }};
+    out<double> out1;
+
+};
+
+class test_node {
+public:
+    test_node() {
+        timer_.start();
+        timer2_.start();
     }
-    inline void Sub(double inputVal1, double inputVal2, double & result) {
-        result = inputVal1 - inputVal2;
-    }
-    inline void Sub1(const double & inputVal1, const double & inputVal2, double & result) {
-        result = inputVal1 - inputVal2;
-    }
-    inline void Mul(double inputVal1, double inputVal2, double * result) {
-        *result = inputVal1 * inputVal2;
-    }
-    ///绝对值
-    inline float Abs(double inputVal){
-        return inputVal>=0?inputVal:-inputVal;
-    }
-    ///三角函数
-    inline double Sin(double inputVal){
-        return sin(inputVal);
-    }
-    inline double Cos(double inputVal){
-        return cos(inputVal);
-    }
-    inline double Tan(double inputVal){
-        return tan(inputVal);
-    }
-    ///反三角函数
-    inline double Asin(double inputVal){
-        return asin(inputVal);
-    }
-    inline double Acos(double inputVal){
-        return acos(inputVal);
-    }
-    inline double Atan(double inputVal){
-        return atan(inputVal);
-    }
-    ///取反
-    inline double UnaryMinus(double inputVal){
-        return -inputVal;
-    }
-    ///弧度转角度
-    inline void Deg2Rad(double deg,double & rad){
-        rad = deg*180/M_PI;
-    }
-    ///取符号位
-    inline int Sign(double inputVal){
-        if(inputVal>0) return 1;
-        else if(inputVal==0) return 0;
-        else return -1;
+public:
+    out<double> out1;
+    out<double> out2;
+private:
+    timer timer_{timer::mode::cycle, 1s,[this](){timer_handler();}};
+    timer timer2_{timer::mode::single,500ms,[this](){timerout_handler();}};
+    int n_ = 0;
+    float m_ = 0.0f;
+
+    void timer_handler(){
+        sync_out so;
+        out1(n_++);
+        m_ += 0.1f;
+        out2(m_);
     }
 
-    class Div {
-    public:
-        double operator()(double inputVal1, double inputVal2) {
-            return inputVal1 / inputVal2;
-        }
-    };
+    void timerout_handler() {
+        std::cout << "timeout" << std::endl;
+    }
+};
+
+class test2_node {
+private:
+    using count_type = std::chrono::steady_clock::duration::rep;
+    count_type prev_count = 0;
+    void in1_update(){
+        count_type now = std::chrono::steady_clock::now().time_since_epoch().count();
+        std::cout << "test2_node::in1 " << in1.get() << ", " << in1.is_updated() << ", " << in2.is_updated() << std::endl;
+        prev_count = now;
+    }
+    void in2_update() {
+        count_type now = std::chrono::steady_clock::now().time_since_epoch().count();
+        std::cout << "test2_node::in2 " << in2.get() << ", " << in1.is_updated() << ", " << in2.is_updated() << std::endl;
+        prev_count = now;
+    }
+public:
+    in<double> in1{0,[this](){in1_update();}};
+    in<double> in2{0.0f,[this](){in2_update();}};
+};
 }
 #endif //MATH_HPP

@@ -649,7 +649,7 @@ Browser</string>
           <enum>Qt::Vertical</enum>
          </property>
         </widget>
-        <widget class="QPushButton" name="pb_ros_network">
+        <widget class="QPushButton" name="pb_script_generator">
          <property name="geometry">
           <rect>
            <x>260</x>
@@ -669,8 +669,8 @@ padding-bottom:15px;</string>
          </property>
          <property name="text">
           <string>
-ROS
-Network</string>
+Script
+Generator</string>
          </property>
          <property name="iconSize">
           <size>

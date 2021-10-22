@@ -126,89 +126,6 @@ void MainWindow::initTreeView()
     //    setTreeNode(tw,"IO",":/res/ticon1.png");
 }
 
-//std::shared_ptr<DataModelRegistry> MainWindow::registerDataModels()
-//{
-//    auto ret = std::make_shared<DataModelRegistry>();
-
-//    const QString path = "/home/fc/works/QtProjects/AutoPlatform/AutoPlateform/nodeconfig/";
-//    QStringList files = getFlieList(path);
-
-//    moduleLibrary->importFiles(files);
-//    std::vector<Invocable> invocableList = moduleLibrary->getInvocableList();
-
-//    for(long int unsigned i=0;i<invocableList.size();i++){
-//        const auto &inv = invocableList[i];
-//        auto f = [inv](){return std::make_unique<InvocableDataModel>(inv);};
-//        //        ret->registerModel<MyDataModel>(f,QString::fromStdString(inv.getName()));
-
-//        //math.hpp的内容注册为MathOperations分类的内容
-//        ret->registerModel<MyDataModel>(f,"MathOperations");
-//        QSet<QString> category;
-//        category = nodeMap.value("MathOperations");
-//        category.insert(QString::fromStdString(inv.getName()));
-//        nodeMap.insert("MathOperations",category);
-//    }
-
-//    nodeTreeDialog->setNodeMap(nodeMap);
-
-//    return ret;
-//}
-
-/////初始化主FlowScene
-//void MainWindow::initNodeEditor()
-//{
-//    AICCFlowView *view = this->makeNewNodeEditorScene();
-
-//    QStackedWidget *sw_flowscene =  ui->sw_flowscene;
-//    QStackedLayout *layout = new QStackedLayout();
-//    layout->addWidget(view);
-//    layout->setContentsMargins(0,0,0,0);
-//    layout->setSpacing(0);
-
-//    sw_flowscene->widget(0)->setLayout(layout);
-//}
-
-/////创建一个新的NodeScene
-//AICCFlowView *MainWindow::makeNewNodeEditorScene(){
-//    //设置nodeeditor的scene与view
-//    auto scene = new FlowScene (this->registerDataModels());
-//    auto view = new AICCFlowView(scene);
-//    _flowScene = scene;
-//    _aiccFlowView = view;
-
-//    view->setAcceptDrops(true);
-//    view->setDragMode(QGraphicsView::DragMode::NoDrag);
-//    //获得节点属性connect
-//    connect(view,&AICCFlowView::getNodeDataModel,this,[&](NodeDataModel *nodeDataModel)
-//    {
-//        QTableWidget * tw = ui->tableWidget;
-//        fillTableData(tw,nodeDataModel);
-//    });
-
-//    //双击节点显示节点的属性窗口
-//    connect(view,&AICCFlowView::nodeDoubleClicked,this,[&](Node &n)
-//    {
-//        //临时判断条件，以后需要用其他方式来判断
-//        if(n.nodeDataModel()->name()=="subsystem::SubSystem"){
-//            return;
-//        }
-
-//        npDialog->show();
-//        QTableWidget *nptw =  npDialog->getTableNodeParameters();
-//        fillTableData(nptw,n.nodeDataModel());
-//    });
-
-//    //获得点击libarary browser中按钮的事件
-//    connect(nodeTreeDialog,&NodeTreeDialog::nodeDoubleClicked,this,[&](QString name){
-//        //此处可在view中创建node
-//        _aiccFlowView->createNode(name,QPoint(_flowScene->width()/2,_flowScene->height()/2));
-
-//        qDebug() << "node tree dialog clicked:" << name << endl;
-//    });
-
-//    return view;
-//}
-
 ///填充节点属性表格数据
 void MainWindow::fillTableData(QTableWidget *tw,const NodeDataModel *ndm)
 {
@@ -253,9 +170,22 @@ void MainWindow::initToolbar()
     ui->tw_toolbar->setTabText(3,"在线标定");
     ui->tw_toolbar->setTabText(4,"模块自定义");
 
-    connect(ui->pb_library_browser,&QPushButton::clicked,this,[&]
-    {
+    //显示node模块的窗口
+    connect(ui->pb_library_browser,&QPushButton::clicked,this,[&]{
         nodeTreeDialog->show();
+    });
+
+    //生成代码按钮
+    connect(ui->pb_script_generator,&QPushButton::clicked,this,[&]{
+        //此处为临时路径,以后需要改进这种方案
+         std::ofstream file("/home/fc/works/CLionProjects/runtime-main/test/generate.cpp");
+         if(!file){
+             QMessageBox::critical(Q_NULLPTR,"发生错误","打开文件失败");
+             return;
+         }
+
+         AICCFlowView * fv = static_cast<AICCFlowView *>(ui->sw_flowscene->currentWidget());
+         SourceGenerator::generate(*(fv->scene()),file);
     });
 }
 
@@ -267,7 +197,6 @@ void MainWindow::initBreadcrumbNavigation(){
 
     //相应点击链接的操作
     connect(ui->l_breadcrumb_navigation,&AICCBreadcrumbNavigation::linkActivated,this,[&](const QString &link){
-//        ui->sw_flowscene->setCurrentIndex()
         ui->sw_flowscene->setCurrPagePathName(link);
         qDebug() << "clicked link:" << link ;
     });
@@ -318,7 +247,7 @@ void MainWindow::initStackedWidget(){
     });
 
     ///向StackedWidget控件中增加第一个页面，并增加第一个FlowScene
-    ui->sw_flowscene->addNewPageFlowScene("root");
+    ui->sw_flowscene->addNewPageFlowScene("");
 
 }
 

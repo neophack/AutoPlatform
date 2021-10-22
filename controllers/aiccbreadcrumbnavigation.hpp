@@ -53,7 +53,7 @@ public:
         for(int i=0;i<_model.columnCount();i++){
             QStandardItem *item = _model.item(0,i);
             QString itemName = item->data().toString();
-            labelRichText += i==0?"<img src=':/res/breadcrumbNavigation/model_16.png'/>":"<img src=':/res/breadcrumbNavigation/subsystem_16.png'  />&nbsp;&nbsp;";
+            labelRichText += i==0?"<img src=':/res/breadcrumbNavigation/model_16.png'/>":"<img src=':/res/breadcrumbNavigation/subsystem_16.png' />&nbsp;&nbsp;";
             QString link;
             for(int j=0;j<=i;j++){
                 link += "/"+_model.item(0,j)->data().toString();

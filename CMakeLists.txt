@@ -48,9 +48,10 @@ set ( PROJECT_SOURCES
         nodeparser/models.cpp
         nodeparser/module_library.hpp
         nodeparser/module_library.cpp
+        nodeparser/source_generator.hpp
 
-        nodeconfig/math.hpp
-        nodeconfig/subsystem.hpp
+#        nodeconfig/math.hpp
+#        nodeconfig/subsystem.hpp
 )
 
 add_executable(AutoPlateform

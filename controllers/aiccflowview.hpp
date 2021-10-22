@@ -41,12 +41,6 @@ public:
                 emit getNodeDataModel(Q_NULLPTR);
             }
         });
-        //节点双击相应事件
-        connect(_scene,&FlowScene::nodeDoubleClicked,this,[&](Node& n)
-        {
-            emit nodeDoubleClicked(n);
-        });
-
 
     }
 public:
@@ -100,6 +94,10 @@ public:
             node.nodeGraphicsObject().setPos(posView);
             _scene->nodePlaced(node);
         }
+    }
+
+    FlowScene *scene() const{
+        return _scene;
     }
 
 private:

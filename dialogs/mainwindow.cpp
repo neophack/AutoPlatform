@@ -178,7 +178,7 @@ void MainWindow::initToolbar()
     //生成代码按钮
     connect(ui->pb_script_generator,&QPushButton::clicked,this,[&]{
         //此处为临时路径,以后需要改进这种方案
-         std::ofstream file("/home/fc/works/CLionProjects/runtime-main/test/generate.cpp");
+         std::ofstream file("/home/fc/works/CLionProjects/runtime/test/generate.cpp");
          if(!file){
              QMessageBox::critical(Q_NULLPTR,"发生错误","打开文件失败");
              return;
@@ -186,6 +186,60 @@ void MainWindow::initToolbar()
 
          AICCFlowView * fv = static_cast<AICCFlowView *>(ui->sw_flowscene->currentWidget());
          SourceGenerator::generate(*(fv->scene()),file);
+    });
+
+    //打开按钮响应动作
+    connect(ui->pb_open,&QPushButton::clicked,this,[&]{
+        //1：加载配置文件初始化各项数据
+        QString fileName = QFileDialog::getOpenFileName(Q_NULLPTR,tr("Open Project"),QDir::homePath(),tr("Project (*.xml)"));
+        if(!QFileInfo::exists(fileName)) return;
+        QFile file(fileName);
+        projectDialog->readProjectXml(file);
+
+        //2：将名称为mainFlowScene的文件内容加载到主FlowScene上
+        QString loadFileName = projectDialog->getProjectPath()+"/"+projectDialog->getProjectName()+"/"+ projectDialog->getFlowSceneSaveFiles()[0];
+        if (!QFileInfo::exists(loadFileName)) return;
+
+        QFile loadFile(loadFileName);
+        if(!loadFile.open(QIODevice::ReadOnly)) return;
+
+        FlowScene *scene =  static_cast<AICCFlowView *>(ui->sw_flowscene->currentWidget())->scene();
+        scene->clearScene();
+        QByteArray wholeFile = loadFile.readAll();
+        scene->loadFromMemory(wholeFile);
+    });
+
+    //保存按钮响应动作，当前只保存一个NodeEditor的内容，子系统实现后需要保存多个NodeEditor内容
+    connect(ui->pb_save,&QPushButton::clicked,this,[&]{
+        //0：判断当前是否为未关联项目，如未关联项目要求用户先创建项目
+        if(projectDialog->getProjectName()==""){
+            int result  = projectDialog->exec();
+            if(result==QDialog::Rejected) return;
+        }
+
+        //1：加载项目文件，初始化所有项目数据
+//        QString fileName = QFileDialog::getOpenFileName(Q_NULLPTR,tr("Open Project"),QDir::homePath(),tr("Project (*.xml)"));
+        QString fileName = projectDialog->getProjectPath()+"/"+projectDialog->getProjectName()+"/.ap/project.xml";
+        if(!QFileInfo::exists(fileName)) return;
+        QFile file(fileName);
+        projectDialog->readProjectXml(file);
+
+        //2：保存当前内容到flow文件中
+         AICCFlowView *fv = static_cast<AICCFlowView *>(ui->sw_flowscene->currentWidget());
+         qDebug() << projectDialog->getProjectPath()<< "   "<< projectDialog->getProjectName();
+         if(projectDialog->getProjectPath()=="" || projectDialog->getProjectName()==""){
+             QMessageBox::critical(Q_NULLPTR,"critical","请先选择项目再进行保存",QMessageBox::Ok,QMessageBox::Ok);
+             return;
+         }
+
+         for(QString ssf :projectDialog->getFlowSceneSaveFiles()){
+            QString saveFileName = projectDialog->getProjectPath()+"/"+projectDialog->getProjectName()+"/"+ssf;
+            qDebug() << "save file name:" << saveFileName;
+            QFile file(saveFileName);
+            if(file.open(QIODevice::WriteOnly)){
+                file.write(fv->scene()->saveToMemory());
+            }
+         }
     });
 }
 

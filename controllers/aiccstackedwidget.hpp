@@ -204,7 +204,7 @@ public:
         this->addWidget(view);
         _routeDataMap.insert(_currPagePathName+"/"+pageName,this->count()-1);
 
-        qDebug() << _routeDataMap;
+//        qDebug() << _routeDataMap;
     }
 
     void setCurrentUrl(const QString &url){

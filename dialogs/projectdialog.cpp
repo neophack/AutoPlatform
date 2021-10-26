@@ -6,6 +6,8 @@
 #include <QMessageBox>
 #include <QtXml/QDomDocument>
 
+#include <cmath>
+
 ProjectDialog::ProjectDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ProjectDialog)
@@ -30,7 +32,7 @@ void ProjectDialog::initButton()
     int nCount = ui->sw_project->count();
 
     //back button event
-    connect(ui->pb_project_back,&QPushButton::clicked,this,[&,nCount]()
+    connect(ui->pb_project_back,&QPushButton::clicked,this,[&]()
     {
         int nIndex = ui->sw_project->currentIndex();
         if(nIndex>0)
@@ -65,8 +67,6 @@ void ProjectDialog::initButton()
     //finish button event
     connect(ui->pb_project_finish,&QPushButton::clicked,this,[&,this]()
     {
-
-
         //create folder
         QDir folder;
         //        QString fullpath = projectPath+"/"+projectName+"/.ap";
@@ -108,7 +108,8 @@ void ProjectDialog::initButton()
             if(file.open(QFile::ReadWrite))
             {
                 writeProjectXml(file);
-                this->close();
+
+                this->accept();
             }
         }
     });
@@ -162,6 +163,7 @@ void ProjectDialog::initStackedSecond()
     connect(ui->le_config1,&QLineEdit::textChanged,this,[&](const QString &str){config1 = str;ui->le_summary_config1->setText(config1);});
     connect(ui->le_config2,&QLineEdit::textChanged,this,[&](const QString &str){config2=str;ui->le_summary_config2->setText(config2);});
 }
+
 ///写入项目配置xml文件
 void ProjectDialog::writeProjectXml(QFile &file)
 {
@@ -179,11 +181,61 @@ void ProjectDialog::writeProjectXml(QFile &file)
     QDomElement flowScenes = doc.createElement("FlowScenes");
     root.appendChild(flowScenes);
     QDomElement mainFlowScene = doc.createElement("FlowScene");
-    mainFlowScene.setAttribute("name","main flow scene");
+    mainFlowScene.setAttribute("name","mainScene");
+    mainFlowScene.setAttribute("saveFile","mainScene.flow");
     flowScenes.appendChild(mainFlowScene);
 
     QTextStream out_stream(&file);
     doc.save(out_stream,4);
     file.close();
+}
 
+///读取项目文件，当前只读取project的name值
+void ProjectDialog::readProjectXml(QFile &file){
+    QDomDocument doc;
+
+    if(!doc.setContent(&file)){
+        file.close();
+        return;
+    }
+
+    //获取项目名称
+    QDomElement root = doc.documentElement();
+    this->projectName = root.attributeNode("name").value();
+
+    //获取项目路径
+    QStringList qsl = file.fileName().split("/"+this->projectName+"/.ap");
+    this->setProjectPath(qsl[0]);
+
+    if(this->projectName==""){
+        QMessageBox::critical(Q_NULLPTR,"critical","项目文件出错，请重新选择项目文件",QMessageBox::Ok,QMessageBox::Ok);
+        return;
+    }
+
+    QDomNodeList flowScenes = root.childNodes().item(0).childNodes();
+    for(int i=0;i<flowScenes.count();i++){
+        QDomNode flowScene = flowScenes.item(i);
+        flowSceneSaveFiles.append(flowScene.toElement().attributeNode("saveFile").value());
+    }
+
+}
+
+const QString &ProjectDialog::getProjectPath() const
+{
+    return projectPath;
+}
+
+const QString &ProjectDialog::getProjectName() const
+{
+    return projectName;
+}
+
+const QStringList &ProjectDialog::getFlowSceneSaveFiles() const
+{
+    return flowSceneSaveFiles;
+}
+
+void ProjectDialog::setProjectPath(const QString &newProjectPath)
+{
+    projectPath = newProjectPath;
 }

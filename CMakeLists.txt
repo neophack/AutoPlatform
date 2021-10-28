@@ -50,9 +50,9 @@ set ( PROJECT_SOURCES
         nodeparser/module_library.cpp
         nodeparser/source_generator.hpp
 
-        adas/node.hpp
-        adas/asio_can.h
-        adas/runtime.hpp
+        nodeconfig/adas/node.hpp
+        nodeconfig/adas/asio_can.h
+        nodeconfig/adas/runtime.hpp
 #        nodeconfig/math.hpp
 #        nodeconfig/subsystem.hpp
 )

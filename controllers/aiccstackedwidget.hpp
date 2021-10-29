@@ -6,6 +6,8 @@
 #include <QSet>
 #include <QStackedLayout>
 #include <QPushButton>
+#include <QDebug>
+#include <QString>
 
 #include <utils.h>
 
@@ -47,7 +49,7 @@ public:
                     R"(
         {
           "FlowViewStyle": {
-            "BackgroundColor": [255, 205, 255],
+            "BackgroundColor": [255, 255, 255],
             "FineGridColor": [255, 255, 255],
             "CoarseGridColor": [255, 255, 255]
           }
@@ -107,8 +109,15 @@ public:
             const auto &inv = invocableList[i];
             auto f = [inv](){return std::make_unique<InvocableDataModel>(inv);};
             //        ret->registerModel<MyDataModel>(f,QString::fromStdString(inv.getName()));
+
+            //区分不同名字空间的节点脚本
+            QStringList nameSpaceClass = QString::fromStdString(inv.getName()).split("::");
             //math.hpp的内容注册为MathOperations分类的内容
-            ret->registerModel<MyDataModel>(f,"MathOperations");
+            if(nameSpaceClass[0]=="math"){
+                ret->registerModel<MyDataModel>(f,"MathOperations");
+            }else if(nameSpaceClass[0]=="other"){
+                ret->registerModel<MyDataModel>(f,"Other");
+            }
 
             //此处包含了MathOperations中包含了多少个按钮
             //node模块的按钮生成根据该数据生成
@@ -116,9 +125,6 @@ public:
             category = _nodeCategoryMap.value("MathOperations");
             category.insert(QString::fromStdString(inv.getName()));
             _nodeCategoryMap.insert("MathOperations",category);
-
-
-            // TODO:后续继续增加其他分类
 
         }
         //注册完数据模型后发出通知，由NodeTreeDialog窗口去接收消息，在NodeTreeDialog左侧展示刚刚注册的数据项
@@ -191,12 +197,12 @@ public:
         });
 
         //双击libarary browser窗口中左侧的树形item，在FlowScene添加对应的node（当前停用，改为了拖动形式）
-//        connect(nodeTreeDialog,&NodeTreeDialog::nodeDoubleClicked,this,[&](QString name){
-            //此处可在view中创建node
-//            _aiccFlowView->createNode(name,QPoint(_flowScene->width()/2,_flowScene->height()/2));
+        //        connect(nodeTreeDialog,&NodeTreeDialog::nodeDoubleClicked,this,[&](QString name){
+        //此处可在view中创建node
+        //            _aiccFlowView->createNode(name,QPoint(_flowScene->width()/2,_flowScene->height()/2));
 
-//            qDebug() << "node tree dialog clicked:" << name << endl;
-//        });
+        //            qDebug() << "node tree dialog clicked:" << name << endl;
+        //        });
 
 
 
@@ -204,7 +210,7 @@ public:
         this->addWidget(view);
         _routeDataMap.insert(_currPagePathName+"/"+pageName,this->count()-1);
 
-//        qDebug() << _routeDataMap;
+        //        qDebug() << _routeDataMap;
     }
 
     void setCurrentUrl(const QString &url){
@@ -213,9 +219,9 @@ public:
 
 public:
     void setCurrPagePathName(const QString &newCurrPagePathName){
-       _currPagePathName = newCurrPagePathName;
-       emit notifyCurrentPagePathNameChanged(_currPagePathName);
-   }
+        _currPagePathName = newCurrPagePathName;
+        emit notifyCurrentPagePathNameChanged(_currPagePathName);
+    }
 
 
 Q_SIGNALS:
@@ -230,7 +236,7 @@ Q_SIGNALS:
     void notifyCurrentPagePathNameChanged(const QString &url);
 
 private:
-//    QMap<QString,int> _pages;
+    //    QMap<QString,int> _pages;
     //模块分类数据
     QMap<QString,QSet<QString>> _nodeCategoryMap;
     //nodeeditor部分

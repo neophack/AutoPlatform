@@ -2,6 +2,10 @@
 
 project(AutoPlateform VERSION 0.1 LANGUAGES CXX)
 
+if(UNIX)
+    set(CMAKE_BUILD_RPATH "$ORIGIN")
+endif(UNIX)
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOUIC ON)
@@ -20,46 +24,46 @@ find_package(Boost REQUIRED COMPONENTS system graph)
 
 
 set ( PROJECT_SOURCES
-        main.cpp
-        dialogs/mainwindow.h dialogs/mainwindow.cpp dialogs/mainwindow.ui
-        dialogs/projectdialog.h dialogs/projectdialog.cpp dialogs/projectdialog.ui
-        dialogs/editordialog.h dialogs/editordialog.cpp dialogs/editordialog.ui
-        dialogs/nodeparametersdialog.h dialogs/nodeparametersdialog.cpp dialogs/nodeparametersdialog.ui
-        dialogs/nodetreedialog.h dialogs/nodetreedialog.cpp dialogs/nodetreedialog.ui
+    main.cpp
+    dialogs/mainwindow.h dialogs/mainwindow.cpp dialogs/mainwindow.ui
+    dialogs/projectdialog.h dialogs/projectdialog.cpp dialogs/projectdialog.ui
+    dialogs/editordialog.h dialogs/editordialog.cpp dialogs/editordialog.ui
+    dialogs/nodeparametersdialog.h dialogs/nodeparametersdialog.cpp dialogs/nodeparametersdialog.ui
+    dialogs/nodetreedialog.h dialogs/nodetreedialog.cpp dialogs/nodetreedialog.ui
 
-        image.qrc
-        TextData.hpp
-        itemreadonlydelegate.h
-        aicctreewidget.hpp
-        aiccmodel.hpp
-        utils.h utils.cpp
-        calculator/aicccalculator.hpp
-        datamodel/aiccsourcedatamodel.hpp
-        datamodel/aiccdisplaydatamodel.hpp
+    image.qrc
+    TextData.hpp
+    itemreadonlydelegate.h
+    aicctreewidget.hpp
+    aiccmodel.hpp
+    utils.h utils.cpp
+    calculator/aicccalculator.hpp
+    datamodel/aiccsourcedatamodel.hpp
+    datamodel/aiccdisplaydatamodel.hpp
 
-        controllers/aicctoolbutton.hpp
-        controllers/aiccbreadcrumbnavigation.hpp
-        controllers/aiccflowview.hpp
-        controllers/aiccstackedwidget.hpp
+    controllers/aicctoolbutton.hpp
+    controllers/aiccbreadcrumbnavigation.hpp
+    controllers/aiccflowview.hpp
+    controllers/aiccstackedwidget.hpp
 
-        nodeparser/invocable.hpp
-        nodeparser/invocable_parser.hpp
-        nodeparser/models.hpp
-        nodeparser/models.cpp
-        nodeparser/module_library.hpp
-        nodeparser/module_library.cpp
-        nodeparser/source_generator.hpp
+    nodeparser/invocable.hpp
+    nodeparser/invocable_parser.hpp
+    nodeparser/models.hpp
+    nodeparser/models.cpp
+    nodeparser/module_library.hpp
+    nodeparser/module_library.cpp
+    nodeparser/source_generator.hpp
 
-        nodeconfig/adas/node.hpp
-        nodeconfig/adas/asio_can.h
-        nodeconfig/adas/runtime.hpp
-#        nodeconfig/math.hpp
-#        nodeconfig/subsystem.hpp
-)
+    nodeconfig/adas/node.hpp
+    nodeconfig/adas/asio_can.h
+    nodeconfig/adas/runtime.hpp
+    #        nodeconfig/math.hpp
+    #        nodeconfig/subsystem.hpp
+    )
 
 add_executable(AutoPlateform
     ${PROJECT_SOURCES}
-)
+    )
 
 target_compile_options(AutoPlateform PRIVATE -Wall -fvisibility=hidden -fno-rtti)
 target_include_directories(AutoPlateform

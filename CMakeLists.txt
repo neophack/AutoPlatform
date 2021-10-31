@@ -15,8 +15,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES QT6 Qt5 COMPONENTS Widgets Xml REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Xml REQUIRED)
+find_package(QT NAMES QT6 Qt5 COMPONENTS Widgets Xml Sql REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Xml Sql REQUIRED)
 find_package(NodeEditor REQUIRED)
 find_package(LLVM REQUIRED CONFIG)
 find_package(Clang REQUIRED CONFIG)
@@ -54,11 +54,12 @@ set ( PROJECT_SOURCES
     nodeparser/module_library.cpp
     nodeparser/source_generator.hpp
 
+    sqllite/aiccsqllite.hpp
+
     nodeconfig/adas/node.hpp
     nodeconfig/adas/asio_can.h
+    nodeconfig/adas/can.h
     nodeconfig/adas/runtime.hpp
-    #        nodeconfig/math.hpp
-    #        nodeconfig/subsystem.hpp
     )
 
 add_executable(AutoPlateform
@@ -75,6 +76,7 @@ target_link_libraries(AutoPlateform
     PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Xml
+    Qt${QT_VERSION_MAJOR}::Sql
     NodeEditor::nodes
     ${LLVM_AVAILABLE_LIBS}
     clangAST

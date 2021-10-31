@@ -18,7 +18,9 @@
 #include <nodes/ConnectionStyle>
 #include <nodes/DataModelRegistry>
 
+#include <algorithm>
 #include <nodeparser/module_library.hpp>
+#include <nodeparser/invocable_parser.hpp>
 #include <controllers/aiccflowview.hpp>
 
 using QtNodes::DataModelRegistry;
@@ -33,13 +35,13 @@ class AICCStackedWidget : public QStackedWidget
     Q_OBJECT
 public:
     AICCStackedWidget(QWidget *parent=nullptr){
-        _moduleLibrary = new ModuleLibrary();
+        //        _moduleLibrary = new ModuleLibrary();
         this->setNodeEditorStyle();
         _currPagePathName = "/root";
     };
 
     ~AICCStackedWidget(){
-        delete _moduleLibrary;
+        //        delete _moduleLibrary;
     }
 
     ///设置NodeEditor的样式
@@ -49,7 +51,7 @@ public:
                     R"(
         {
           "FlowViewStyle": {
-            "BackgroundColor": [255, 255, 255],
+            "BackgroundColor": [255, 205, 255],
             "FineGridColor": [255, 255, 255],
             "CoarseGridColor": [255, 255, 255]
           }
@@ -99,14 +101,23 @@ public:
     {
         auto ret = std::make_shared<DataModelRegistry>();
 
-        const QString path = "/home/fc/works/QtProjects/AutoPlatform/AutoPlateform/nodeconfig/";
+        const QString path = "/home/fc/works/QtProjects/AutoPlatform/AutoPlatform/nodeconfig/";
         QStringList files = getFlieList(path);
 
-        _moduleLibrary->importFiles(files);
-        std::vector<Invocable> invocableList = _moduleLibrary->getInvocableList();
+        std::filesystem::path includePaths{path.toStdString()};
+        std::list<Invocable> parser_result;
+        InvocableParser parser;
+        parser.setIncludePaths(includePaths);
 
-        for(long int unsigned i=0;i<invocableList.size();i++){
-            const auto &inv = invocableList[i];
+        for(const auto &file:files){
+            std::filesystem::path p = file.toStdString();
+            std::string error_message;
+            parser.parse(p,parser_result,error_message);
+        }
+
+
+        for(auto it = parser_result.begin();it != parser_result.end();++it){
+            const auto &inv = *it;
             auto f = [inv](){return std::make_unique<InvocableDataModel>(inv);};
             //        ret->registerModel<MyDataModel>(f,QString::fromStdString(inv.getName()));
 
@@ -115,7 +126,9 @@ public:
             //math.hpp的内容注册为MathOperations分类的内容
             if(nameSpaceClass[0]=="math"){
                 ret->registerModel<MyDataModel>(f,"MathOperations");
-            }else if(nameSpaceClass[0]=="other"){
+            }
+            else{
+//            else if(nameSpaceClass[0]=="other"){
                 ret->registerModel<MyDataModel>(f,"Other");
             }
 
@@ -240,7 +253,7 @@ private:
     //模块分类数据
     QMap<QString,QSet<QString>> _nodeCategoryMap;
     //nodeeditor部分
-    ModuleLibrary *_moduleLibrary;
+    //    ModuleLibrary *_moduleLibrary;
 
     //当前page路径名称,形式为"/root/level1/level2"
     QString _currPagePathName;

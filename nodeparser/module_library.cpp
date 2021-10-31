@@ -25,7 +25,11 @@ void ModuleLibrary::importFiles(const QStringList &files) {
             qDebug() << "result size: " << parse_result.size();
             setInvocables(parse_result);
         }
+
+
+
     }
+
 }
 
 bool ModuleLibrary::fileInIncludePaths(const std::filesystem::path & file) {
@@ -56,19 +60,6 @@ void ModuleLibrary::setInvocables(const std::list<Invocable> &list) {
     std::copy(list.begin(), list.end(), std::back_inserter(_invocableList));
     endResetModel();
     emit importCompleted();
+
 }
-
-///返回可调用node的list
-std::vector<Invocable> ModuleLibrary::getInvocableList() const
-{
-    return _invocableList;
-}
-
-
-
-
-
-
-
-
 

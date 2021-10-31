@@ -14,6 +14,7 @@
 #include <fstream>
 #include "models.hpp"
 #include <iostream>
+#include <sstream>
 
 class SourceGenerator {
 private:
@@ -65,7 +66,22 @@ private:
         for (const auto &inc: includes)
             file << "#include <" << inc << ">" << std::endl;
     }
+    static std::string nodeParamValueList(const std::vector<Param> & params) {
+        if(params.empty())
+            return "";
+        std::stringstream ss;
+        ss << "{";
+        bool first = true;
+        for(const Param & p: params) {
+            if(!first)
+                ss << ", ";
+            ss << p.getLiteral();
+            first = false;
+        }
+        ss << "}";
+        return ss.str();
 
+    }
     static void generateTask(const std::map<const InvocableDataModel *, std::string> &varNames,
                              const std::map<std::string, std::vector<std::string>> &connections, std::ofstream &file) {
         file << "class task0 {" << std::endl;
@@ -73,7 +89,7 @@ private:
         for(const auto & p: varNames) {
             const std::string & type = p.first->invocable().getName();
             const std::string & name = p.second;
-            file << indent(1) << type << " " << name << ";" << std::endl;
+            file << indent(1) << type << " " << name << nodeParamValueList(p.first->invocable().getParamList()) << ";" << std::endl;
         }
         file << "public:" << std::endl;
         file << indent(1) << "task0() {" << std::endl;
@@ -102,15 +118,15 @@ public:
         std::set<std::string> includes;
         std::map<const InvocableDataModel *, std::string> varNames;
         std::map<std::string, std::vector<std::string>> connections;
-//        qDebug() << &scene;
-//        qDebug() << "generate scene node count:" << (&scene)->allNodes().size();
         extractIncludes(scene, includes);
         makeNodeVarNames(scene, varNames);
         makeConnections(scene, varNames, connections);
         generateIncludes(includes, file);
         generateTask(varNames, connections, file);
         generateMain(file);
+
     }
+
 };
 
 #endif //NODEDRIVING_SOURCE_GENERATOR_HPP

@@ -28,10 +28,7 @@ Q_SIGNALS:
     void importCompleted();
 
 private:
-//        std::filesystem::path _includePaths{"/home/fc/works/ADAS_AD_Projects/demo_proj/include"};
-    //该路径为生成node的配置文件的路径，如加载路径不包含该路径则视为非法路径。
-    //可加载多个配置路径在此处
-    std::filesystem::path _includePaths{"/home/fc/works/QtProjects/AutoPlatform/AutoPlateform/nodeconfig"};
+    std::filesystem::path _includePaths{"/home/liudian/Desktop/ADAS_AD_Projects/demo_proj/include"};
     std::vector<Invocable> _invocableList;
     bool fileInIncludePaths(const std::filesystem::path & file);
     void setInvocables(const std::list<Invocable> & list);
@@ -42,18 +39,19 @@ public:
 
     QVariant data(const QModelIndex &index, int role) const override;
 
-    std::vector<Invocable> getInvocableList() const ;
-
 
     std::shared_ptr<QtNodes::DataModelRegistry> test2() {
         auto ret = std::make_shared<QtNodes::DataModelRegistry>();
-        for(const auto & inv: _invocableList) {
-            std::cout << "name: " << inv.getName() << " ret: " << inv.getReturning().getType() << std::endl;
-            auto f = [inv](){return std::make_unique<InvocableDataModel>(inv);};
-            ret->registerModel<MyDataModel>(f, "test");
-        }
+            for(const auto & inv: _invocableList) {
+                auto f = [inv](){return std::make_unique<InvocableDataModel>(inv);};
+                ret->registerModel<InvocableDataModel>(f, "test");
+
+            }
         return ret;
+
     }
+
+
 };
 
 

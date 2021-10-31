@@ -9,16 +9,15 @@
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
+#include <iostream>
 
-class Param {
+class Port {
 public:
     enum Direction {In, Out};
-    enum Passing {Value, Pointer, Ref};
 private:
     std::string _type;
     std::string _name;
     Direction _direction;
-    Passing _passing;
 public:
 
     const std::string &getType() const {
@@ -44,22 +43,11 @@ public:
     void setDirection(Direction direction) {
         _direction = direction;
     }
-
-    Passing getPassing() const {
-        return _passing;
-    }
-
-    void setPassing(Passing passing) {
-        _passing = passing;
-    }
 };
 
-class Returning {
-public:
-    enum Passing {Value, Pointer, Ref};
+class Param {
 private:
-    std::string _type;
-    Passing _passing;
+    std::string _type, _name, _value;
 public:
     const std::string &getType() const {
         return _type;
@@ -67,20 +55,62 @@ public:
 
     void setType(const std::string &type) {
         _type = type;
+        if(_type == "_Bool")
+            _type = "bool";
     }
 
-    Passing getPassing() const {
-        return _passing;
+    const std::string &getName() const {
+        return _name;
     }
 
-    void setPassing(Passing passing) {
-        _passing = passing;
+    void setName(const std::string &name) {
+        _name = name;
     }
 
-    bool isVoid() const {
-        return _type == "void";
+    const std::string getValue() const {
+        if(_value.empty()) {
+            if(isInteger())
+                return "0";
+            else if(isFloat())
+                return "0.0";
+        }
+        return _value;
     }
 
+    void setValue(const std::string &value) {
+        _value = value;
+    }
+
+    bool isInteger() const {
+        return _type == "int" || _type == "bool";
+    }
+
+    bool isFloat() const {
+        return _type == "float" || _type == "double";
+    }
+
+    bool isString() const {
+        return  _type == "std::string";
+    }
+
+    const std::string getLiteral() const {
+        if(isInteger()) {
+            if(_type=="bool") {
+                if(getValue()=="0")
+                    return "false";
+                else
+                    return "true";
+            }
+            return _value.empty() ? "0" : _value;
+        }else if(isFloat()) {
+            return _value.empty() ? "0.0" : _value;
+        } else if(isString()) {
+            return "\"" + _value + "\"";
+        } else {
+            std::cerr << "warning: param type: " + _type + "not support";
+            return "\"" + _value + "\"";
+        }
+    }
 };
 
 class Invocable {
@@ -90,8 +120,8 @@ private:
     Type _type;
     std::string _name;
     std::string _header_file;
+    std::vector<Port> _portList;
     std::vector<Param> _paramList;
-    Returning _returning;
 public:
     Type getType() const {
         return _type;
@@ -117,54 +147,65 @@ public:
         _header_file = headerFile;
     }
 
-    const std::vector<Param> &getParamList() const {
+    const std::vector<Port> &getPortList() const {
+        return _portList;
+    }
+
+    void setPortList(const std::vector<Port> &portList) {
+        _portList = portList;
+    }
+
+    const std::vector<Param> & getParamList() const {
         return _paramList;
     }
 
-    void setParamList(const std::vector<Param> &paramList) {
+    void setParamList(const std::vector<Param> & paramList) {
         _paramList = paramList;
     }
-
-    const Returning &getReturning() const {
-        return _returning;
+    bool hasParam(const std::string & name) {
+        return std::find_if(_paramList.begin(), _paramList.end(), [&name](const Param & p){return p.getName() == name;}) != _paramList.end();
+    }
+    void setParamValue(const std::string & name, const std::string & value) {
+        auto iter = std::find_if(_paramList.begin(), _paramList.end(), [&name](const Param & p){return p.getName() == name;});
+        if(iter==_paramList.end())
+            throw std::logic_error("param name '" + name + "' not exists");
+        iter->setValue(value);
     }
 
-    void setReturning(const Returning &returning) {
-        _returning = returning;
-    }
+
 
     bool operator<(const Invocable &rhs) const {
         return _name < rhs._name;
     }
     unsigned int getNumOutput() const {
-        return std::count_if(_paramList.begin(), _paramList.end(), [](const Param & p){return p.getDirection()==Param::Out;});
+        return std::count_if(_portList.begin(), _portList.end(), [](const Port & p){return p.getDirection() == Port::Out;});
     }
     unsigned int getNumInput() const {
-        return std::count_if(_paramList.begin(), _paramList.end(), [](const Param & p){return p.getDirection()==Param::In;});
+        return std::count_if(_portList.begin(), _portList.end(), [](const Port & p){return p.getDirection() == Port::In;});
 
     }
-    const Param & getInputParam(unsigned int i) const {
+    const Port getInputPort(unsigned int i) const {
         int j = 0;
-        for(const auto & p:_paramList) {
-            if(p.getDirection()==Param::In ) {
+        for(const auto & p:_portList) {
+            if(p.getDirection() == Port::In ) {
                 if(j==i) return p;
                 else j++;
             }
         }
-        throw std::out_of_range("input param index out of range");
+        throw std::out_of_range("input port index out of range");
 
     }
-    const Param & getOutputParam(unsigned int i) const {
+    const Port & getOutputPort(unsigned int i) const {
         int j = 0;
-        for(const auto & p:_paramList) {
-            if(p.getDirection()==Param::Out ) {
+        for(const auto & p:_portList) {
+            if(p.getDirection() == Port::Out ) {
                 if(j==i) return p;
                 else j++;
             }
 
         }
         std::cout << "here" << std::endl;
-        throw std::out_of_range("output param index out of range");
+        throw std::out_of_range("output port index out of range");
 
     }
 

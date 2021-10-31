@@ -63,6 +63,18 @@ public:
         invocable.setType(Invocable::Class);
         invocable.setName(decl->getQualifiedNameAsString());
         invocable.setHeaderFile(_findContext.getHeaderFile().string());
+        for(const auto *method: decl->methods()) {
+            const auto *ctor = clang::dyn_cast<clang::CXXConstructorDecl>(method);
+            if(!ctor)
+                continue;
+            if(ctor->getAccess()!=clang::AS_public)
+                continue;
+            if(ctor->isDefaultConstructor() || ctor->isCopyOrMoveConstructor())
+                continue;
+            llvm::outs() << "constructor: " << ctor->getNameAsString() << " params: " << ctor->getNumParams() << "\n";
+            parseConstructorParams(ctor, invocable);
+
+        }
         if(parseFields(decl, invocable)) {
             _findContext.getResult().push_back(invocable);
         }
@@ -72,10 +84,10 @@ public:
 
 
 private:
-    std::optional<Param> parseParam(const clang::FieldDecl *field) {
+    std::optional<Port> parsePort(const clang::FieldDecl *field) {
         if(field->getAccess() != clang::AS_public)
             return {};
-        Param ret;
+        Port ret;
         ret.setName(field->getNameAsString());
         clang::QualType type = field->getType();
         const auto *tst = type->getAs<clang::TemplateSpecializationType>();
@@ -85,9 +97,9 @@ private:
             return {};
         std::string temp_name =  tst->getAs<clang::RecordType>()->getDecl()->getQualifiedNameAsString();
         if(temp_name == "adas::node::out")
-            ret.setDirection(Param::Out);
+            ret.setDirection(Port::Out);
         else if(temp_name == "adas::node::in")
-            ret.setDirection(Param::In);
+            ret.setDirection(Port::In);
         else
             return {};
         if(tst->getNumArgs() != 1)
@@ -98,17 +110,30 @@ private:
         return ret;
     }
     bool parseFields(const clang::CXXRecordDecl *decl, Invocable &invocable) {
-        std::vector<Param> params;
+        std::vector<Port> ports;
         for (const auto *field: decl->fields()) {
-            auto param_opt = parseParam(field);
-            if(!param_opt)
+            auto port_opt = parsePort(field);
+            if(!port_opt)
                 continue;
-            params.push_back(*param_opt);
+            ports.push_back(*port_opt);
         }
-        if(params.empty())
+        if(ports.empty())
             return false;
-        invocable.setParamList(params);
+        invocable.setPortList(ports);
         return true;
+    }
+
+    void parseConstructorParams(const clang::CXXConstructorDecl *decl, Invocable & invocable) {
+        std::vector<Param> params(decl->getNumParams());
+        for (int i = 0; i < decl->getNumParams(); ++i) {
+            auto & p = params[i];
+            const clang::ParmVarDecl *parmVarDecl = decl->getParamDecl(i);
+            p.setType(parmVarDecl->getType().getAsString());
+            p.setName(parmVarDecl->getNameAsString());
+            llvm::outs() << "type: " << p.getType() << " name: " << p.getName() << "\n";
+        }
+        invocable.setParamList(params);
+
     }
 
     bool inFile(clang::Decl *decl) {
@@ -181,13 +206,13 @@ public:
                 getInsertArgumentAdjuster("-std=c++17",
                                           clang::tooling::ArgumentInsertPosition::END));
         tool.appendArgumentsAdjuster(
-                getInsertArgumentAdjuster({"-I", "/home/fc/clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04/lib/clang/12.0.0/include"},
+                getInsertArgumentAdjuster({"-I", "/opt/clang+llvm-12.0.1-x86_64-linux-gnu-ubuntu/lib/clang/12.0.1/include"},
                                           clang::tooling::ArgumentInsertPosition::END));
         tool.appendArgumentsAdjuster(
-                getInsertArgumentAdjuster({"-I", "/home/fc/works/CLionProjects/runtime-main/include"},
+                getInsertArgumentAdjuster({"-I", "/home/liudian/CLionProjects/runtime/include"},
                                           clang::tooling::ArgumentInsertPosition::END));
         tool.appendArgumentsAdjuster(
-                getInsertArgumentAdjuster({"-I", "/usr/include"},
+                getInsertArgumentAdjuster({"-I", "/usr/local/boost_1_76_0/include"},
                                           clang::tooling::ArgumentInsertPosition::END));
         tool.appendArgumentsAdjuster(
                 getInsertArgumentAdjuster({"-I", _includePaths.string()},

@@ -6,11 +6,13 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    sqlite.initDatabaseConnection();
+    //    _moduleLibrary = QSharedPointer<ModuleLibrary>(new ModuleLibrary());
+    ui->setupUi(this);
     projectDialog = new ProjectDialog(parent);
     npDialog = new NodeParametersDialog(parent);
+    isDialog = new ImportScriptDialog(parent);
     nodeTreeDialog = new NodeTreeDialog(parent);
-    moduleLibrary = new ModuleLibrary();
-    ui->setupUi(this);
 
     this->initMenu();
     this->initTreeView();
@@ -20,24 +22,21 @@ MainWindow::MainWindow(QWidget *parent)
     this->initToolbar();
     this->initBreadcrumbNavigation();
     this->initStackedWidget();
+    this->initNodeEditor();
+    this->initImportScriptDialog();
 
-
-    //面包屑导航调试代码,同时显示文本与本地图片资源
-    //    img{width:20px;height:20px}
-    //    QString str_navigation = QString("<style>a{text-decoration:none;font-size:15px;vertical-align:middle} img{vertical-align:bottom}</style><img src=':/res/breadcrumbNavigation/model_16.png'/><a href='level1' >level1</a><img src=':/res/breadcrumbNavigation/rightArrow_16.png'  />&nbsp;&nbsp;<img src=':/res/breadcrumbNavigation/subsystem_16.png'/><a href='level2'>level2</a><img src=':/res/breadcrumbNavigation/rightArrow_16.png'/>&nbsp;");
-    //    ui->l_breadcrumb_navigation->setText(str_navigation);
 
 }
 
 MainWindow::~MainWindow()
 {
+    sqlite.closeConnection();
     delete projectDialog;
     delete npDialog;
     delete nodeTreeDialog;
+    delete isDialog;
     delete ui;
-    delete moduleLibrary;
-    //    delete _flowScene;
-    //    delete _aiccFlowView;
+
 }
 
 void MainWindow::initMenu()
@@ -47,6 +46,7 @@ void MainWindow::initMenu()
     connect(ui->actionPropertyWindow,&QAction::toggled,ui->dw_right,&QDockWidget::setVisible);
     connect(ui->actionAbout,&QAction::triggered,this,&QApplication::aboutQt);
     connect(ui->actionNewProject,&QAction::triggered,projectDialog,&ProjectDialog::show);
+    connect(ui->actionOpen,&QAction::triggered,this,&MainWindow::pbOpenAction);
 }
 
 void MainWindow::setTreeNode(QTreeWidget *tw,const char* ptext,const char* picon){
@@ -178,36 +178,23 @@ void MainWindow::initToolbar()
     //生成代码按钮
     connect(ui->pb_script_generator,&QPushButton::clicked,this,[&]{
         //此处为临时路径,以后需要改进这种方案
-         std::ofstream file("/home/fc/works/CLionProjects/runtime/test/generate.cpp");
-         if(!file){
-             QMessageBox::critical(Q_NULLPTR,"发生错误","打开文件失败");
-             return;
-         }
+        std::ofstream file("/home/fc/works/CLionProjects/runtime/test/generate.cpp");
+        if(!file){
+            QMessageBox::critical(Q_NULLPTR,"发生错误","打开文件失败");
+            return;
+        }
 
-         AICCFlowView * fv = static_cast<AICCFlowView *>(ui->sw_flowscene->currentWidget());
-         SourceGenerator::generate(*(fv->scene()),file);
+        AICCFlowView * fv = static_cast<AICCFlowView *>(ui->sw_flowscene->currentWidget());
+        SourceGenerator::generate(*(fv->scene()),file);
+    });
+
+    //导入脚本按钮
+    connect(ui->pb_import,&QPushButton::clicked,this,[&]{
+        isDialog->show();
     });
 
     //打开按钮响应动作
-    connect(ui->pb_open,&QPushButton::clicked,this,[&]{
-        //1：加载配置文件初始化各项数据
-        QString fileName = QFileDialog::getOpenFileName(Q_NULLPTR,tr("Open Project"),QDir::homePath(),tr("Project (*.xml)"));
-        if(!QFileInfo::exists(fileName)) return;
-        QFile file(fileName);
-        projectDialog->readProjectXml(file);
-
-        //2：将名称为mainFlowScene的文件内容加载到主FlowScene上
-        QString loadFileName = projectDialog->getProjectPath()+"/"+projectDialog->getProjectName()+"/"+ projectDialog->getFlowSceneSaveFiles()[0];
-        if (!QFileInfo::exists(loadFileName)) return;
-
-        QFile loadFile(loadFileName);
-        if(!loadFile.open(QIODevice::ReadOnly)) return;
-
-        FlowScene *scene =  static_cast<AICCFlowView *>(ui->sw_flowscene->currentWidget())->scene();
-        scene->clearScene();
-        QByteArray wholeFile = loadFile.readAll();
-        scene->loadFromMemory(wholeFile);
-    });
+    connect(ui->pb_open,&QPushButton::clicked,this,&MainWindow::pbOpenAction);
 
     //保存按钮响应动作，当前只保存一个NodeEditor的内容，子系统实现后需要保存多个NodeEditor内容
     connect(ui->pb_save,&QPushButton::clicked,this,[&]{
@@ -218,28 +205,28 @@ void MainWindow::initToolbar()
         }
 
         //1：加载项目文件，初始化所有项目数据
-//        QString fileName = QFileDialog::getOpenFileName(Q_NULLPTR,tr("Open Project"),QDir::homePath(),tr("Project (*.xml)"));
+        //        QString fileName = QFileDialog::getOpenFileName(Q_NULLPTR,tr("Open Project"),QDir::homePath(),tr("Project (*.xml)"));
         QString fileName = projectDialog->getProjectPath()+"/"+projectDialog->getProjectName()+"/.ap/project.xml";
         if(!QFileInfo::exists(fileName)) return;
         QFile file(fileName);
         projectDialog->readProjectXml(file);
 
         //2：保存当前内容到flow文件中
-         AICCFlowView *fv = static_cast<AICCFlowView *>(ui->sw_flowscene->currentWidget());
-         qDebug() << projectDialog->getProjectPath()<< "   "<< projectDialog->getProjectName();
-         if(projectDialog->getProjectPath()=="" || projectDialog->getProjectName()==""){
-             QMessageBox::critical(Q_NULLPTR,"critical","请先选择项目再进行保存",QMessageBox::Ok,QMessageBox::Ok);
-             return;
-         }
+        AICCFlowView *fv = static_cast<AICCFlowView *>(ui->sw_flowscene->currentWidget());
+        qDebug() << projectDialog->getProjectPath()<< "   "<< projectDialog->getProjectName();
+        if(projectDialog->getProjectPath()=="" || projectDialog->getProjectName()==""){
+            QMessageBox::critical(Q_NULLPTR,"critical","请先选择项目再进行保存",QMessageBox::Ok,QMessageBox::Ok);
+            return;
+        }
 
-         for(QString ssf :projectDialog->getFlowSceneSaveFiles()){
+        for(QString ssf :projectDialog->getFlowSceneSaveFiles()){
             QString saveFileName = projectDialog->getProjectPath()+"/"+projectDialog->getProjectName()+"/"+ssf;
             qDebug() << "save file name:" << saveFileName;
             QFile file(saveFileName);
             if(file.open(QIODevice::WriteOnly)){
                 file.write(fv->scene()->saveToMemory());
             }
-         }
+        }
     });
 }
 
@@ -258,7 +245,6 @@ void MainWindow::initBreadcrumbNavigation(){
 
 ///初始化StackedWidget
 void MainWindow::initStackedWidget(){
-
     ///nodeeditor数据注册完后，要将数据传递给NodeTreeDialog窗口使用
     connect(ui->sw_flowscene,&AICCStackedWidget::registerDataModelsCompleted,this,[&](const QMap<QString,QSet<QString>> nodeMap){
         nodeTreeDialog->setNodeMap(nodeMap);
@@ -303,6 +289,132 @@ void MainWindow::initStackedWidget(){
     ///向StackedWidget控件中增加第一个页面，并增加第一个FlowScene
     ui->sw_flowscene->addNewPageFlowScene("");
 
+}
+
+
+///动作函数部分
+void MainWindow::pbOpenAction(){
+    //1：加载配置文件初始化各项数据
+    QString fileName = QFileDialog::getOpenFileName(Q_NULLPTR,tr("Open Project"),QDir::homePath(),tr("Project (*.xml)"));
+    if(!QFileInfo::exists(fileName)) return;
+    QFile file(fileName);
+    projectDialog->readProjectXml(file);
+
+    //2：将名称为mainFlowScene的文件内容加载到主FlowScene上
+    QString loadFileName = projectDialog->getProjectPath()+"/"+projectDialog->getProjectName()+"/"+ projectDialog->getFlowSceneSaveFiles()[0];
+    if (!QFileInfo::exists(loadFileName)) return;
+
+    QFile loadFile(loadFileName);
+    if(!loadFile.open(QIODevice::ReadOnly)) return;
+
+    FlowScene *scene =  static_cast<AICCFlowView *>(ui->sw_flowscene->currentWidget())->scene();
+    scene->clearScene();
+    QByteArray wholeFile = loadFile.readAll();
+    scene->loadFromMemory(wholeFile);
+}
+
+
+///NodeEditor数据处理部分
+
+//初始化时初始化主Scene的右键菜单，和NodeTreeDialog的node分类数据
+void MainWindow::initNodeEditor(){
+    _moduleLibrary = QSharedPointer<ModuleLibrary>(new ModuleLibrary());
+    //1:先解析文件，准备好解析文件中的node数据
+    const QString path = "/home/fc/works/QtProjects/AutoPlatform/AutoPlatform/nodeconfig/";
+    QStringList files = getFlieList(path);
+    _moduleLibrary->importFiles(files);
+    std::list<Invocable> parserResult = _moduleLibrary->getParseResult();
+
+    //2:生成scene的右键node数据,并注册到所有scene中
+    std::shared_ptr<DataModelRegistry> registerDataModels = this->registerDataModels(parserResult);
+    std::list<FlowScene *> scenes =  ui->sw_flowscene->allScenes();
+    for(FlowScene *scene:scenes){
+        scene->setRegistry(registerDataModels);
+    }
+
+    //3:生成NodeTreeDialog的node菜单结构
+    QMap<QString,QSet<QString>> nodeCategoryDataModels = this->nodeCategoryDataModels(parserResult);
+    nodeTreeDialog->setNodeMap(nodeCategoryDataModels);
+
+}
+
+///初始化导入脚本对话框的内容
+void MainWindow::initImportScriptDialog(){
+    //选择文本后响应函数
+    connect(isDialog,&ImportScriptDialog::filesSelected,this,[&](const QStringList files){
+//        QApplication::processEvents();
+
+        //1:解析选择文件中的node
+        _moduleLibrary->importFiles(files);
+//                QApplication::processEvents();
+        std::list<Invocable> parserResult = _moduleLibrary->getParseResult();
+        //2:生成scene的右键node数据，并中蹙额到所有scene中
+        std::shared_ptr<DataModelRegistry> registerDataModels = this->registerDataModels(parserResult);
+        std::list<FlowScene *> scenes = ui->sw_flowscene->allScenes();
+        for(FlowScene *scene:scenes){
+            scene->setRegistry(registerDataModels);
+        }
+
+        //3:生成NodeTreeDialog的node菜单结构
+        QMap<QString,QSet<QString>> nodeCategoryDataModels = this->nodeCategoryDataModels(parserResult);
+        nodeTreeDialog->setNodeMap(nodeCategoryDataModels);
+    });
+
+    //文件解析百分比
+    connect(_moduleLibrary.get(),&ModuleLibrary::fileParserCompleted,this,[&](const int count,const int index){
+        qDebug() << "count:" << count << "index:" << index;
+        isDialog->setImportProcess(index,count);
+        isDialog->setListModels(_moduleLibrary.get());
+    });
+}
+
+
+//只负责注册右键菜单，并返回右键菜单的数据模型
+std::shared_ptr<DataModelRegistry> MainWindow::registerDataModels(const std::list<Invocable> parserResult){
+    auto ret = std::make_shared<DataModelRegistry>();
+    AICCSqlite sqlite;
+    for(auto it = parserResult.begin();it!=parserResult.end();++it){
+        const auto &inv = *it;
+        QSqlQuery squery = sqlite.query("select n.name,n.caption,nc.class_name from node n inner join nodeClass nc on n.class_id = nc.id where n.name = '"+QString::fromStdString(inv.getName())+"'");
+        if(squery.next()){
+            QString caption = squery.value(1).toString();
+            QString className = squery.value(2).toString();
+            auto f = [inv,caption](){
+                std::unique_ptr<InvocableDataModel> p = std::make_unique<InvocableDataModel>(inv);
+                p.get()->setCaption(caption);
+                return p;
+            };
+            ret->registerModel<MyDataModel>(f,className);
+        }else{
+            auto f = [inv](){return std::make_unique<InvocableDataModel>(inv);};
+            ret->registerModel<MyDataModel>(f,"Other");
+        }
+    }
+    return ret;
+}
+
+//只负责NodeTreeDialog的node模块分类
+QMap<QString,QSet<QString>> MainWindow::nodeCategoryDataModels(const std::list<Invocable> parserResult){
+    QMap<QString,QSet<QString>> ret;
+    //定义写入分类数据函数
+    auto f_insertNodeCategoryMap = [&ret](const QString className,const QString nodeName){
+        QSet<QString> category;
+        category = ret.value(className);
+        category.insert(nodeName);
+        ret.insert(className,category);
+    };
+    AICCSqlite sqlite;
+    for(auto it = parserResult.begin();it!=parserResult.end();++it){
+        const auto &inv = *it;
+        QSqlQuery squery = sqlite.query("select n.name,n.caption,nc.class_name from node n inner join nodeClass nc on n.class_id = nc.id where n.name = '"+QString::fromStdString(inv.getName())+"'");
+        if(squery.next()){
+            QString className = squery.value(2).toString();
+            f_insertNodeCategoryMap(className,QString::fromStdString(inv.getName()));
+        }else{
+            f_insertNodeCategoryMap("Other",QString::fromStdString(inv.getName()));
+        }
+    }
+    return ret;
 }
 
 

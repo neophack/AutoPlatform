@@ -15,6 +15,9 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/sqlite/node.db3 DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/sqlite)
+
+#find_package(Qt5 COMPONENTS Widgets Xml Sql REQUIRED)
 find_package(QT NAMES QT6 Qt5 COMPONENTS Widgets Xml Sql REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Xml Sql REQUIRED)
 find_package(NodeEditor REQUIRED)
@@ -30,6 +33,7 @@ set ( PROJECT_SOURCES
     dialogs/editordialog.h dialogs/editordialog.cpp dialogs/editordialog.ui
     dialogs/nodeparametersdialog.h dialogs/nodeparametersdialog.cpp dialogs/nodeparametersdialog.ui
     dialogs/nodetreedialog.h dialogs/nodetreedialog.cpp dialogs/nodetreedialog.ui
+    dialogs/importscriptdialog.h dialogs/importscriptdialog.cpp dialogs/importscriptdialog.ui
 
     image.qrc
     TextData.hpp
@@ -54,7 +58,7 @@ set ( PROJECT_SOURCES
     nodeparser/module_library.cpp
     nodeparser/source_generator.hpp
 
-    sqllite/aiccsqllite.hpp
+    sqlite/aiccsqlite.hpp
 
     nodeconfig/adas/node.hpp
     nodeconfig/adas/asio_can.h

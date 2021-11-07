@@ -13,6 +13,8 @@ public:
         //面包屑导航显示信息原始参考数据
         //        QString str_navigation = QString("<style>a{text-decoration:none;font-size:15px;color:black;vertical-align:middle} img{vertical-align:bottom}</style><img src=':/res/breadcrumbNavigation/model_16.png'/><a href='level1' >level1</a><img src=':/res/breadcrumbNavigation/rightArrow_16.png'  />&nbsp;&nbsp;<img src=':/res/breadcrumbNavigation/subsystem_16.png'/><a href='level2'>level2</a><img src=':/res/breadcrumbNavigation/rightArrow_16.png'/>&nbsp;");
 
+        //    ui->l_breadcrumb_navigation->setText(str_navigation);
+
         QStringList list ;
 //        list << "root";
 //        list << "root" << "level2" << "level3" << "level3" << "level4";

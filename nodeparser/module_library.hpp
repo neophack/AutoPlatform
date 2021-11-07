@@ -26,10 +26,12 @@ public Q_SLOTS:
 Q_SIGNALS:
     void errorOccured(const QString &error_message);
     void importCompleted();
+    void fileParserCompleted(const int count,const int index);
 
 private:
-    std::filesystem::path _includePaths{"/home/liudian/Desktop/ADAS_AD_Projects/demo_proj/include"};
+    std::filesystem::path _includePaths{"/home/fc/works/QtProjects/AutoPlatform/AutoPlatform/nodeconfig"};
     std::vector<Invocable> _invocableList;
+    std::list<Invocable> _parseResult;
     bool fileInIncludePaths(const std::filesystem::path & file);
     void setInvocables(const std::list<Invocable> & list);
 
@@ -48,9 +50,9 @@ public:
 
             }
         return ret;
-
     }
 
+    std::list<Invocable> getParseResult(){return _parseResult;}
 
 };
 

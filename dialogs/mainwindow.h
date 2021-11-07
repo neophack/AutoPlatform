@@ -37,7 +37,8 @@
 #include "aicctreewidget.hpp"
 #include "controllers/aicctoolbutton.hpp"
 #include "nodeparser/source_generator.hpp"
-//#include "controllers/aiccbreadcrumbnavigation.hpp"
+#include "nodeparser/models.hpp"
+#include "sqlite/aiccsqlite.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -65,25 +66,20 @@ protected:
 
 private:
     Ui::MainWindow *ui;
+    AICCSqlite sqlite;
     ProjectDialog *projectDialog;
     NodeParametersDialog *npDialog;
     NodeTreeDialog *nodeTreeDialog;
-
-//    FlowScene *_flowScene;
-//    AICCFlowView *_aiccFlowView;
+    ImportScriptDialog *isDialog;
+    QSharedPointer<ModuleLibrary> _moduleLibrary;                                                            //脚本导入node的模型数据
 
     //nodeeditor部分
-    ModuleLibrary *moduleLibrary;
     QMap<QString,QSet<QString>> nodeMap;
 
     AICCStackedWidget asw;
 
     void initMenu();
     void initTreeView();
-    //nodeeditor调用部分
-//    void initNodeEditor();
-//    AICCFlowView * makeNewNodeEditorScene();
-//    std::shared_ptr<DataModelRegistry> registerDataModels();
 
     void fillTableData(QTableWidget *tw,const NodeDataModel *nmd);
 
@@ -93,6 +89,15 @@ private:
     void setTreeNode(QTreeWidget *tw,const char* ptext,const char* picon);
     void initBreadcrumbNavigation();
     void initStackedWidget();
+    void initImportScriptDialog();
+
+    //动作函数部分
+    void pbOpenAction();
+
+private:
+    void initNodeEditor();
+    std::shared_ptr<DataModelRegistry> registerDataModels(const std::list<Invocable> parserResult);
+    QMap<QString,QSet<QString>> nodeCategoryDataModels(const std::list<Invocable> parseResult);
 
 };
 #endif // MAINWINDOW_H

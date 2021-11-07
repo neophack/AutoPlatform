@@ -206,10 +206,10 @@ public:
                 getInsertArgumentAdjuster("-std=c++17",
                                           clang::tooling::ArgumentInsertPosition::END));
         tool.appendArgumentsAdjuster(
-                getInsertArgumentAdjuster({"-I", "/opt/clang+llvm-12.0.1-x86_64-linux-gnu-ubuntu/lib/clang/12.0.1/include"},
+                getInsertArgumentAdjuster({"-I", "/home/fc/clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04/lib/clang/12.0.0/include"},
                                           clang::tooling::ArgumentInsertPosition::END));
         tool.appendArgumentsAdjuster(
-                getInsertArgumentAdjuster({"-I", "/home/liudian/CLionProjects/runtime/include"},
+                getInsertArgumentAdjuster({"-I", "/home/fc/works/CLionProjects/runtime/include"},
                                           clang::tooling::ArgumentInsertPosition::END));
         tool.appendArgumentsAdjuster(
                 getInsertArgumentAdjuster({"-I", "/usr/local/boost_1_76_0/include"},

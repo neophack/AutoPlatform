@@ -1,13 +1,6 @@
 #include "projectdialog.h"
 #include "ui_projectdialog.h"
 
-#include <QDebug>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QtXml/QDomDocument>
-
-#include <cmath>
-
 ProjectDialog::ProjectDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ProjectDialog)

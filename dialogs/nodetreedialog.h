@@ -9,6 +9,7 @@
 #include <QSharedPointer>
 #include <QString>
 #include <QTreeWidgetItem>
+#include <QSqlQuery>
 #include <iostream>
 #include <list>
 #include <vector>
@@ -16,7 +17,11 @@
 #include <algorithm>
 #include "stdio.h"
 #include "controllers/aicctoolbutton.hpp"
+#include "controllers/aiccstackedwidget.hpp"
 #include "aicctreewidget.hpp"
+#include "sqlite/aiccsqlite.hpp"
+#include <dialogs/importscriptdialog.h>
+
 
 #include <nodes/DataModelRegistry>
 
@@ -41,7 +46,8 @@ class NodeTreeDialog : public QDialog
 public:
     using CategoriesSet = std::set<QString>;
 
-    explicit NodeTreeDialog(QWidget *parent = nullptr);
+    explicit NodeTreeDialog(QWidget *parent = Q_NULLPTR);
+//    explicit NodeTreeDialog(QWidget *parent = Q_NULLPTR,ImportScriptDialog *isd=Q_NULLPTR);
     ~NodeTreeDialog();
     void setNodeMap(QMap<QString,QSet<QString>> pnm);
 
@@ -53,13 +59,15 @@ private slots:
 
 private:
     void initTreeWidget();
-    void initNodeConfig();
+//    void initNodeConfig();
+    void initToolBar();
     void makeRootGroupItem(AICCTreeWidget *atw,const QString name,const QString text);
 
 
 private:
     Ui::NodeTreeDialog *ui;
     QMap<QString,QSet<QString>> _nodeMap;
+
 
 };
 

@@ -63,13 +63,18 @@ protected:
         {
             QByteArray itemData = e->mimeData()->data("Data/name");
             QDataStream dataStream(&itemData,QIODevice::ReadOnly);
+            QString name;
+            dataStream >> name;
+            qDebug() << "name:"<<name;
 
-            QString text;
-            dataStream >> text;
-            qDebug() << "text:"<<text;
+            QByteArray itemCaptionData = e->mimeData()->data("Data/caption");
+            QDataStream dataCaptionStream(&itemCaptionData,QIODevice::ReadOnly);
+            QString caption;
+            dataCaptionStream >> caption;
+            qDebug() << "caption:" << caption;
 
             //如果当前节点为子系统,通知上层AICCStackedWidget判断是否有重名,是否可创建新的page
-            emit checkSubSystemName(text,e->pos(),this);
+            emit checkSubSystemName(name,e->pos(),this);
 
             //处理消息传递
             if(e->source() == this)

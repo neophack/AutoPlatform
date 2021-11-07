@@ -18,19 +18,19 @@ protected:
     void mousePressEvent(QMouseEvent *e)
     {
         if(e->button() & Qt::LeftButton){
-            QByteArray dataItem;
-            QDataStream dataStream(&dataItem,QIODevice::WriteOnly);
-            dataStream << _nodeName;
-
             QByteArray dataItemName;
             QDataStream dataStreamName(&dataItemName,QIODevice::WriteOnly);
-            QString sidata = _nodeCaption;
-            dataStreamName << sidata;
+            dataStreamName << _nodeName;
+
+            QByteArray dataItemCaption;
+            QDataStream dataStreamCaption(&dataItemCaption,QIODevice::WriteOnly);
+            QString sidataCaption = _nodeCaption;
+            dataStreamCaption << sidataCaption;
 
             QDrag *drag = new QDrag(this);
             QMimeData *mimeData = new QMimeData();
-            mimeData->setData("Data/text",dataItem);
             mimeData->setData("Data/name",dataItemName);
+            mimeData->setData("Data/caption",dataItemCaption);
 
             drag->setMimeData(mimeData);
             drag->exec(Qt::MoveAction);

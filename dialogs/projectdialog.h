@@ -4,6 +4,11 @@
 #include <QDialog>
 #include <iostream>
 #include <QFile>
+#include <QDebug>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QtXml/QDomDocument>
+#include <cmath>
 
 namespace Ui {
 class ProjectDialog;

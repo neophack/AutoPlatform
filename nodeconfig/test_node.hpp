@@ -93,73 +93,12 @@ namespace test_package {
 }
 namespace can {
     using namespace std::chrono_literals;
-
     class input {
     private:
         adas::node::can_io &can_io_;
     public:
 
         explicit input(std::string channel) : can_io_(adas::node::can_io::get(channel)) {
-            can_io_.receive_handler([this](const can_frame &msg) {
-                can_msg(msg);
-            });
-        }
-
-    public:
-        adas::node::out<can_frame> can_msg;
-
-    };
-
-    class input_can0 {
-    private:
-        adas::node::can_io &can_io_ = adas::node::can_io::get("can0");
-    public:
-        input_can0() {
-            can_io_.receive_handler([this](const can_frame &msg) {
-                can_msg(msg);
-            });
-        }
-
-    public:
-        adas::node::out<can_frame> can_msg;
-
-    };
-
-    class input_vcan0 {
-    private:
-        adas::node::can_io &can_io_ = adas::node::can_io::get("vcan0");
-    public:
-        input_vcan0() {
-            can_io_.receive_handler([this](const can_frame &msg) {
-                can_msg(msg);
-            });
-        }
-
-    public:
-        adas::node::out<can_frame> can_msg;
-
-    };
-
-    class input_can1 {
-    private:
-        adas::node::can_io &can_io_ = adas::node::can_io::get("can1");
-    public:
-        input_can1() {
-            can_io_.receive_handler([this](const can_frame &msg) {
-                can_msg(msg);
-            });
-        }
-
-    public:
-        adas::node::out<can_frame> can_msg;
-
-    };
-
-    class input_vcan1 {
-    private:
-        adas::node::can_io &can_io_ = adas::node::can_io::get("vcan1");
-    public:
-        input_vcan1() {
             can_io_.receive_handler([this](const can_frame &msg) {
                 can_msg(msg);
             });
@@ -184,53 +123,6 @@ namespace can {
         adas::node::in<can_frame> can_msg{{}, [this]() { can_msg_update(); }};
     };
 
-    class output_can0 {
-    private:
-        adas::node::can_io &can_io_ = adas::node::can_io::get("can0");
-
-        void can_msg_update() {
-            can_io_.send(can_msg.get());
-        }
-
-    public:
-        adas::node::in<can_frame> can_msg{{}, [this]() { can_msg_update(); }};
-    };
-
-    class output_vcan0 {
-    private:
-        adas::node::can_io &can_io_ = adas::node::can_io::get("vcan0");
-
-        void can_msg_update() {
-            can_io_.send(can_msg.get());
-        }
-
-    public:
-        adas::node::in<can_frame> can_msg{{}, [this]() { can_msg_update(); }};
-    };
-
-    class output_can1 {
-    private:
-        adas::node::can_io &can_io_ = adas::node::can_io::get("can1");
-
-        void can_msg_update() {
-            can_io_.send(can_msg.get());
-        }
-
-    public:
-        adas::node::in<can_frame> can_msg{{}, [this]() { can_msg_update(); }};
-    };
-
-    class output_vcan1 {
-    private:
-        adas::node::can_io &can_io_ = adas::node::can_io::get("vcan1");
-
-        void can_msg_update() {
-            can_io_.send(can_msg.get());
-        }
-
-    public:
-        adas::node::in<can_frame> can_msg{{}, [this]() { can_msg_update(); }};
-    };
 }
 namespace logging {
     class print_int {
@@ -309,86 +201,7 @@ namespace constant {
         }
     };
 
-    class int_0 {
-    private:
-        adas::node::timer timer_{adas::node::timer::mode::single, std::chrono::seconds(0), [this]() {
-            out(0);
-        }};
-    public:
-        adas::node::out<int> out;
-
-        int_0() {
-            timer_.start();
-        }
-    };
-
-    class int_1 {
-    private:
-        adas::node::timer timer_{adas::node::timer::mode::single, std::chrono::seconds(0), [this]() {
-            out(1);
-        }};
-    public:
-        adas::node::out<int> out;
-
-        int_1() {
-            timer_.start();
-        }
-    };
-
-    class int_2 {
-    private:
-        adas::node::timer timer_{adas::node::timer::mode::single, std::chrono::seconds(0), [this]() {
-            out(2);
-        }};
-    public:
-        adas::node::out<int> out;
-
-        int_2() {
-            timer_.start();
-        }
-    };
-
-    class int_5 {
-    private:
-        adas::node::timer timer_{adas::node::timer::mode::single, std::chrono::seconds(0), [this]() {
-            out(5);
-        }};
-    public:
-        adas::node::out<int> out;
-
-        int_5() {
-            timer_.start();
-        }
-    };
-
-    class int_10 {
-    private:
-        adas::node::timer timer_{adas::node::timer::mode::single, std::chrono::seconds(0), [this]() {
-            out(10);
-        }};
-    public:
-        adas::node::out<int> out;
-
-        int_10() {
-            timer_.start();
-        }
-    };
-
-    class int_100 {
-    private:
-        adas::node::timer timer_{adas::node::timer::mode::single, std::chrono::seconds(0), [this]() {
-            out(100);
-        }};
-    public:
-        adas::node::out<int> out;
-
-        int_100() {
-            timer_.start();
-        }
-    };
-    //float
-
-    class float_value {
+   class float_value {
     private:
         float val_;
         adas::node::timer timer_{adas::node::timer::mode::single, std::chrono::seconds(0), [this]() {
@@ -417,164 +230,6 @@ namespace constant {
             timer_.start();
         }
     };
-
-    class float_0 {
-    private:
-        adas::node::timer timer_{adas::node::timer::mode::single, std::chrono::seconds(0), [this]() {
-            out(0);
-        }};
-    public:
-        adas::node::out<float> out;
-
-        float_0() {
-            timer_.start();
-        }
-    };
-
-    class float_1 {
-    private:
-        adas::node::timer timer_{adas::node::timer::mode::single, std::chrono::seconds(0), [this]() {
-            out(1);
-        }};
-    public:
-        adas::node::out<float> out;
-
-        float_1() {
-            timer_.start();
-        }
-    };
-
-    class float_2 {
-    private:
-        adas::node::timer timer_{adas::node::timer::mode::single, std::chrono::seconds(0), [this]() {
-            out(2);
-        }};
-    public:
-        adas::node::out<float> out;
-
-        float_2() {
-            timer_.start();
-        }
-    };
-
-    class float_5 {
-    private:
-        adas::node::timer timer_{adas::node::timer::mode::single, std::chrono::seconds(0), [this]() {
-            out(5);
-        }};
-    public:
-        adas::node::out<float> out;
-
-        float_5() {
-            timer_.start();
-        }
-    };
-
-    class float_10 {
-    private:
-        adas::node::timer timer_{adas::node::timer::mode::single, std::chrono::seconds(0), [this]() {
-            out(10);
-        }};
-    public:
-        adas::node::out<float> out;
-
-        float_10() {
-            timer_.start();
-        }
-    };
-
-    class float_100 {
-    private:
-        adas::node::timer timer_{adas::node::timer::mode::single, std::chrono::seconds(0), [this]() {
-            out(100);
-        }};
-    public:
-        adas::node::out<float> out;
-
-        float_100() {
-            timer_.start();
-        }
-    };
-
-    class float_pi {
-    private:
-        adas::node::timer timer_{adas::node::timer::mode::single, std::chrono::seconds(0), [this]() {
-            out(3.141592f);
-        }};
-    public:
-        adas::node::out<float> out;
-
-        float_pi() {
-            timer_.start();
-        }
-    };
-    //1/x
-
-    class float_1_2 {
-    private:
-        adas::node::timer timer_{adas::node::timer::mode::single, std::chrono::seconds(0), [this]() {
-            out(1.0f / 2.0f);
-        }};
-    public:
-        adas::node::out<float> out;
-
-        float_1_2() {
-            timer_.start();
-        }
-    };
-
-    class float_1_5 {
-    private:
-        adas::node::timer timer_{adas::node::timer::mode::single, std::chrono::seconds(0), [this]() {
-            out(1.0f / 5.0f);
-        }};
-    public:
-        adas::node::out<float> out;
-
-        float_1_5() {
-            timer_.start();
-        }
-    };
-
-    class float_1_10 {
-    private:
-        adas::node::timer timer_{adas::node::timer::mode::single, std::chrono::seconds(0), [this]() {
-            out(1.0f / 10.0f);
-        }};
-    public:
-        adas::node::out<float> out;
-
-        float_1_10() {
-            timer_.start();
-        }
-    };
-
-    class float_1_100 {
-    private:
-        adas::node::timer timer_{adas::node::timer::mode::single, std::chrono::seconds(0), [this]() {
-            out(1.0f / 100.0f);
-        }};
-    public:
-        adas::node::out<float> out;
-
-        float_1_100() {
-            timer_.start();
-        }
-    };
-
-    class float_1_pi {
-    private:
-        adas::node::timer timer_{adas::node::timer::mode::single, std::chrono::seconds(0), [this]() {
-            out(1.0f / 3.141592f);
-        }};
-    public:
-        adas::node::out<float> out;
-
-        float_1_pi() {
-            timer_.start();
-        }
-    };
-    //bool
 
     class bool_value {
     private:
@@ -1318,16 +973,5 @@ namespace adas::ehs3::utility {
     };
 
 }
-namespace test_params {
-    class Params {
-    public:
-        adas::node::in<int> in{0, []() {}};
-        adas::node::out<int> out;
 
-        Params(int param_int, float param_float, std::string param_str, bool param_bool) {
-
-        }
-
-    };
-}
 #endif //MATH_HPP

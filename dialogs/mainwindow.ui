@@ -128,6 +128,7 @@
     </widget>
     <addaction name="menuNew"/>
     <addaction name="separator"/>
+    <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
@@ -669,7 +670,7 @@ padding-bottom:15px;</string>
          </property>
          <property name="text">
           <string>
-Script
+Code
 Generator</string>
          </property>
          <property name="iconSize">
@@ -679,7 +680,7 @@ Generator</string>
           </size>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_4">
+        <widget class="QPushButton" name="pb_import">
          <property name="geometry">
           <rect>
            <x>360</x>
@@ -698,9 +699,8 @@ padding-top:8px;
 padding-bottom:15px;</string>
          </property>
          <property name="text">
-          <string>
-VariableSize
-Messages</string>
+          <string>Import
+</string>
          </property>
          <property name="iconSize">
           <size>
@@ -1044,6 +1044,11 @@ Inspector</string>
    </property>
    <property name="text">
     <string>PropertyWindow</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
    </property>
   </action>
  </widget>

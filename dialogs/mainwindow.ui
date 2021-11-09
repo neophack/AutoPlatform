@@ -467,6 +467,9 @@
      </property>
      <item>
       <widget class="QTabWidget" name="tw_toolbar">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -625,6 +628,9 @@ Browser</string>
          </property>
         </widget>
         <widget class="Line" name="line">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="geometry">
           <rect>
            <x>140</x>
@@ -752,6 +758,9 @@ Settings</string>
          </property>
         </widget>
         <widget class="QLabel" name="label">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="geometry">
           <rect>
            <x>570</x>
@@ -781,6 +790,9 @@ Settings</string>
          </property>
         </widget>
         <widget class="QComboBox" name="comboBox">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="geometry">
           <rect>
            <x>570</x>

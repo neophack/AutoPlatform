@@ -315,16 +315,36 @@ void MainWindow::pbOpenAction(){
 
 
 ///NodeEditor数据处理部分
-
 //初始化时初始化主Scene的右键菜单，和NodeTreeDialog的node分类数据
 void MainWindow::initNodeEditor(){
     _moduleLibrary = QSharedPointer<ModuleLibrary>(new ModuleLibrary());
     //1:先解析文件，准备好解析文件中的node数据
-    const QString path = "/home/fc/works/QtProjects/AutoPlatform/AutoPlatform/nodeconfig/";
+    const QString path = QApplication::applicationDirPath()+"/nodeconfig/";
     QStringList files = getFlieList(path);
-    _moduleLibrary->importFiles(files);
-    std::list<Invocable> parserResult = _moduleLibrary->getParseResult();
 
+    //0:执行加载前准备动作
+    ui->statusbar->showMessage("开始加载Node模块数据...");
+    ui->tw_toolbar->setEnabled(false);
+
+    //耗时操作放到单独线程中操作，操作完毕后通知外部继续执行
+    QtConcurrent::run([&,files](){
+        _moduleLibrary->importFiles(files);
+        std::list<Invocable> parserResult = _moduleLibrary->getParseResult();
+        emit scriptParserCompleted(parserResult);
+    });
+
+    //接收scriptParserCompleted信号，执行后续操作
+    //为connect注册std::list<Invocable>类型，否则connect在SLOT中会不识别该类型
+    qRegisterMetaType<std::list<Invocable>>("std::list<Invocable>");
+    connect(this,&MainWindow::scriptParserCompleted,this,&MainWindow::registrySceneGenerateNodeMenu);
+    //显示状态栏进度数据
+    connect(_moduleLibrary.get(),&ModuleLibrary::fileParserCompleted,this,[&](const int count ,const int index,const QString filename){
+        //加载过程中显示当前进度
+        ui->statusbar->showMessage("已加载Node模块:"+filename+"("+QString::number(index+1)+"/"+QString::number(count)+")",(index+1)>=count ? 3000 : 0);
+    });
+}
+
+void MainWindow::registrySceneGenerateNodeMenu(std::list<Invocable> parserResult){
     //2:生成scene的右键node数据,并注册到所有scene中
     std::shared_ptr<DataModelRegistry> registerDataModels = this->registerDataModels(parserResult);
     std::list<FlowScene *> scenes =  ui->sw_flowscene->allScenes();
@@ -336,33 +356,28 @@ void MainWindow::initNodeEditor(){
     QMap<QString,QSet<QString>> nodeCategoryDataModels = this->nodeCategoryDataModels(parserResult);
     nodeTreeDialog->setNodeMap(nodeCategoryDataModels);
 
+    //4:启用工具栏
+//    ui->tw_toolbar->setTabEnabled(true);
+    qDebug() << "tw_toolbar->setEnabled(true)";
+    ui->tw_toolbar->setEnabled(true);
 }
 
 ///初始化导入脚本对话框的内容
 void MainWindow::initImportScriptDialog(){
     //选择文本后响应函数
     connect(isDialog,&ImportScriptDialog::filesSelected,this,[&](const QStringList files){
-//        QApplication::processEvents();
 
-        //1:解析选择文件中的node
-        _moduleLibrary->importFiles(files);
-//                QApplication::processEvents();
-        std::list<Invocable> parserResult = _moduleLibrary->getParseResult();
-        //2:生成scene的右键node数据，并中蹙额到所有scene中
-        std::shared_ptr<DataModelRegistry> registerDataModels = this->registerDataModels(parserResult);
-        std::list<FlowScene *> scenes = ui->sw_flowscene->allScenes();
-        for(FlowScene *scene:scenes){
-            scene->setRegistry(registerDataModels);
-        }
-
-        //3:生成NodeTreeDialog的node菜单结构
-        QMap<QString,QSet<QString>> nodeCategoryDataModels = this->nodeCategoryDataModels(parserResult);
-        nodeTreeDialog->setNodeMap(nodeCategoryDataModels);
+        QtConcurrent::run([&,files](){
+            //1:解析选择文件中的node
+            _moduleLibrary->importFiles(files);
+            std::list<Invocable> parserResult = _moduleLibrary->getParseResult();
+            //此处只通知initNodeEditor函数中链接的registrySceneGenerateNodeMenu函数执行后续操作即可
+            emit scriptParserCompleted(parserResult);
+        });
     });
 
     //文件解析百分比
-    connect(_moduleLibrary.get(),&ModuleLibrary::fileParserCompleted,this,[&](const int count,const int index){
-        qDebug() << "count:" << count << "index:" << index;
+    connect(_moduleLibrary.get(),&ModuleLibrary::fileParserCompleted,this,[&](const int count,const int index,const QString filename){
         isDialog->setImportProcess(index,count);
         isDialog->setListModels(_moduleLibrary.get());
     });

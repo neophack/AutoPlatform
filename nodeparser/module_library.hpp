@@ -5,6 +5,8 @@
 #ifndef NODEDRIVING_MODULE_LIBRARY_HPP
 #define NODEDRIVING_MODULE_LIBRARY_HPP
 #include <QStringList>
+#include <QApplication>
+#include <QString>
 #include <filesystem>
 #include <list>
 #include <vector>
@@ -26,21 +28,18 @@ public Q_SLOTS:
 Q_SIGNALS:
     void errorOccured(const QString &error_message);
     void importCompleted();
-    void fileParserCompleted(const int count,const int index);
+    void fileParserCompleted(const int count,const int index,const QString filename);
 
 private:
-    std::filesystem::path _includePaths{"/home/fc/works/QtProjects/AutoPlatform/AutoPlatform/nodeconfig"};
+    std::filesystem::path _includePaths{(QApplication::applicationDirPath()+"/nodeconfig").toStdString()};
     std::vector<Invocable> _invocableList;
     std::list<Invocable> _parseResult;
     bool fileInIncludePaths(const std::filesystem::path & file);
     void setInvocables(const std::list<Invocable> & list);
 
-
 public:
     int rowCount(const QModelIndex &parent) const override;
-
     QVariant data(const QModelIndex &index, int role) const override;
-
 
     std::shared_ptr<QtNodes::DataModelRegistry> test2() {
         auto ret = std::make_shared<QtNodes::DataModelRegistry>();

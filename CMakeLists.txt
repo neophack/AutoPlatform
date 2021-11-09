@@ -17,9 +17,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/sqlite/node.db3 DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/sqlite)
 
+file(GLOB allCopyFiles "${CMAKE_CURRENT_SOURCE_DIR}/nodeconfig/*.hpp")
+file(COPY ${allCopyFiles} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/nodeconfig)
+
 #find_package(Qt5 COMPONENTS Widgets Xml Sql REQUIRED)
-find_package(QT NAMES QT6 Qt5 COMPONENTS Widgets Xml Sql REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Xml Sql REQUIRED)
+find_package(QT NAMES QT6 Qt5 COMPONENTS Widgets Xml Sql Concurrent REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Xml Sql Concurrent REQUIRED)
 find_package(NodeEditor REQUIRED)
 find_package(LLVM REQUIRED CONFIG)
 find_package(Clang REQUIRED CONFIG)
@@ -81,6 +84,7 @@ target_link_libraries(AutoPlateform
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Xml
     Qt${QT_VERSION_MAJOR}::Sql
+    Qt${QT_VERSION_MAJOR}::Concurrent
     NodeEditor::nodes
     ${LLVM_AVAILABLE_LIBS}
     clangAST

@@ -28,7 +28,8 @@ void ModuleLibrary::importFiles(const QStringList &files) {
             qDebug() << "result size: " << _parseResult.size();
             setInvocables(_parseResult);
         }
-        emit fileParserCompleted(files.count(),i);
+        QStringList fileSplitPath = file.split("/");
+        emit fileParserCompleted(files.count(),i,fileSplitPath[fileSplitPath.count()-1]);
     }
 }
 

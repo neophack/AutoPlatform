@@ -15,6 +15,8 @@
 #include <QString>
 #include <QStackedLayout>
 #include <QSharedPointer>
+#include <QtConcurrent>
+#include <QMetaType>
 #include <fstream>
 
 #include <nodes/FlowScene>
@@ -40,6 +42,7 @@
 #include "nodeparser/models.hpp"
 #include "sqlite/aiccsqlite.hpp"
 
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -61,8 +64,9 @@ public:
     ~MainWindow();
 
 protected:
-//    void startDrag(Qt::DropActions supportedActions);
-//    void dragMoveEvent(QDragMoveEvent *e);
+    void registrySceneGenerateNodeMenu(std::list<Invocable> parserResult);
+Q_SIGNALS:
+    void scriptParserCompleted(std::list<Invocable> parserResult);
 
 private:
     Ui::MainWindow *ui;

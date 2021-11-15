@@ -9,11 +9,11 @@ MainWindow::MainWindow(QWidget *parent)
     sqlite.initDatabaseConnection();
     //    _moduleLibrary = QSharedPointer<ModuleLibrary>(new ModuleLibrary());
     ui->setupUi(this);
-    this->setAttribute(Qt::WA_DeleteOnClose);
-    projectDialog = new ProjectDialog(parent);
-    npDialog = new NodeParametersDialog(parent);
-    isDialog = new ImportScriptDialog(parent);
-    nodeTreeDialog = new NodeTreeDialog(parent);
+    this->setAttribute(Qt::WA_QuitOnClose);
+    projectDialog = new ProjectDialog(this);
+    npDialog = new NodeParametersDialog(this);
+    isDialog = new ImportScriptDialog(this);
+    nodeTreeDialog = new NodeTreeDialog(this);
 
 
     this->initMenu();
@@ -396,8 +396,6 @@ std::shared_ptr<DataModelRegistry> MainWindow::registerDataModels(const std::lis
         QSqlQuery squery = sqlite.query("select n.name,n.caption,nc.class_name from node n inner join nodeClass nc on n.class_id = nc.id where n.name = '"+QString::fromStdString(inv.getName())+"'");
         if(squery.next()){
             QString caption = squery.value(1).toString();
-            if(QString::compare(caption,""))
-                qDebug() << "caption is empty";
             QString className = squery.value(2).toString();
             auto f = [inv,caption](){
                 std::unique_ptr<InvocableDataModel> p = std::make_unique<InvocableDataModel>(inv);
@@ -406,7 +404,11 @@ std::shared_ptr<DataModelRegistry> MainWindow::registerDataModels(const std::lis
             };
             ret->registerModel<MyDataModel>(f,className);
         }else{
-            auto f = [inv](){return std::make_unique<InvocableDataModel>(inv);};
+            auto f = [inv](){
+                std::unique_ptr<InvocableDataModel> p = std::make_unique<InvocableDataModel>(inv);
+                p.get()->setCaption(p.get()->name());
+                return p;
+            };
             ret->registerModel<MyDataModel>(f,"Other");
         }
     }

@@ -9,10 +9,12 @@ MainWindow::MainWindow(QWidget *parent)
     sqlite.initDatabaseConnection();
     //    _moduleLibrary = QSharedPointer<ModuleLibrary>(new ModuleLibrary());
     ui->setupUi(this);
+    this->setAttribute(Qt::WA_DeleteOnClose);
     projectDialog = new ProjectDialog(parent);
     npDialog = new NodeParametersDialog(parent);
     isDialog = new ImportScriptDialog(parent);
     nodeTreeDialog = new NodeTreeDialog(parent);
+
 
     this->initMenu();
     this->initTreeView();
@@ -205,7 +207,7 @@ void MainWindow::initToolbar()
         }
 
         //1：加载项目文件，初始化所有项目数据
-        //        QString fileName = QFileDialog::getOpenFileName(Q_NULLPTR,tr("Open Project"),QDir::homePath(),tr("Project (*.xml)"));
+        //        QString fileName = QFileDialog::getOpenFileName(this,tr("Open Project"),QDir::homePath(),tr("Project (*.xml)"));
         QString fileName = projectDialog->getProjectPath()+"/"+projectDialog->getProjectName()+"/.ap/project.xml";
         if(!QFileInfo::exists(fileName)) return;
         QFile file(fileName);
@@ -295,7 +297,7 @@ void MainWindow::initStackedWidget(){
 ///动作函数部分
 void MainWindow::pbOpenAction(){
     //1：加载配置文件初始化各项数据
-    QString fileName = QFileDialog::getOpenFileName(Q_NULLPTR,tr("Open Project"),QDir::homePath(),tr("Project (*.xml)"));
+    QString fileName = QFileDialog::getOpenFileName(this,tr("Open Project"),QDir::homePath(),tr("Project (*.xml)"));
     if(!QFileInfo::exists(fileName)) return;
     QFile file(fileName);
     projectDialog->readProjectXml(file);
@@ -360,6 +362,7 @@ void MainWindow::registrySceneGenerateNodeMenu(std::list<Invocable> parserResult
 //    ui->tw_toolbar->setTabEnabled(true);
     qDebug() << "tw_toolbar->setEnabled(true)";
     ui->tw_toolbar->setEnabled(true);
+    ui->menubar->setEnabled(true);
 }
 
 ///初始化导入脚本对话框的内容
@@ -393,6 +396,8 @@ std::shared_ptr<DataModelRegistry> MainWindow::registerDataModels(const std::lis
         QSqlQuery squery = sqlite.query("select n.name,n.caption,nc.class_name from node n inner join nodeClass nc on n.class_id = nc.id where n.name = '"+QString::fromStdString(inv.getName())+"'");
         if(squery.next()){
             QString caption = squery.value(1).toString();
+            if(QString::compare(caption,""))
+                qDebug() << "caption is empty";
             QString className = squery.value(2).toString();
             auto f = [inv,caption](){
                 std::unique_ptr<InvocableDataModel> p = std::make_unique<InvocableDataModel>(inv);

@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>NodeTreeDialog</class>
  <widget class="QDialog" name="NodeTreeDialog">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -12,6 +15,9 @@
   </property>
   <property name="windowTitle">
    <string>Library Browser</string>
+  </property>
+  <property name="modal">
+   <bool>false</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>

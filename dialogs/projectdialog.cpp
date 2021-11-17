@@ -101,10 +101,12 @@ void ProjectDialog::initButton()
             if(file.open(QFile::ReadWrite))
             {
                 writeProjectXml(file);
-
                 this->accept();
+                emit projectCreateCompleted(true);
+                return;
             }
         }
+        emit projectCreateCompleted(false);
     });
 
 

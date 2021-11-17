@@ -94,6 +94,7 @@ private:
     void initBreadcrumbNavigation();
     void initStackedWidget();
     void initImportScriptDialog();
+    void initProjectDialog();
 
     //动作函数部分
     void pbOpenAction();

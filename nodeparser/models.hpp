@@ -273,7 +273,6 @@ public:
             }
             _input->setLayout(l);
         }
-
     }
 
 

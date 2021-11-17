@@ -718,7 +718,7 @@ padding-bottom:15px;</string>
           </size>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_5">
+        <widget class="QPushButton" name="pb_modelSettings">
          <property name="geometry">
           <rect>
            <x>460</x>

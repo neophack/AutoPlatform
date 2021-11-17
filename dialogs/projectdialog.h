@@ -28,8 +28,11 @@ public:
     const QString &getProjectPath() const;
     const QStringList &getFlowSceneSaveFiles() const;
     void readProjectXml(QFile &file);
-
     void setProjectPath(const QString &newProjectPath);
+
+Q_SIGNALS:
+    void projectCreateCompleted(bool success);
+
 
 private:
     void initButton();
@@ -37,7 +40,6 @@ private:
     void initStackedFirst();
     void initStackedSecond();
     void writeProjectXml(QFile &file);
-
 
 private:
     Ui::ProjectDialog *ui;

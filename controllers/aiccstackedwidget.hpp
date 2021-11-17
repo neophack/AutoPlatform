@@ -109,7 +109,7 @@ public:
         auto view = new AICCFlowView(scene,this);
         view->setAcceptDrops(true);
         view->setDragMode(QGraphicsView::DragMode::NoDrag);
-        _allScenes.push_front(scene);
+        _allViews.push_front(view);
 
         //接受view的node创建完成消息增加新的page
         connect(view,&AICCFlowView::checkSubSystemName,this,[&](const QString &name,const QPoint pos,const AICCFlowView *cview){
@@ -167,7 +167,6 @@ public:
         this->addWidget(view);
         _routeDataMap.insert(_currPagePathName+"/"+pageName,this->count()-1);
 
-        //        qDebug() << _routeDataMap;
     }
 
     void setCurrentUrl(const QString &url){
@@ -190,7 +189,35 @@ public:
         emit notifyCurrentPagePathNameChanged(_currPagePathName);
     }
 
-    const std::list<FlowScene *> &allScenes() const{return _allScenes;}
+    const QList<AICCFlowView *> &allViews() const{return _allViews;}
+    ///通过key获得view
+    AICCFlowView* getView(QString key){
+        int index = _routeDataMap[key];
+        return _allViews[index];
+    }
+    ///将当前的scene恢复成默认初始一个主scene状态
+    void initDefaultScenes(){
+        int rootIndex = 0;
+        //1.处理_routeDataMap
+        for(auto miter = _routeDataMap.begin();miter!=_routeDataMap.end();){
+            if(miter.key().compare("/root/")!=0){
+                miter = _routeDataMap.erase(miter);
+            }else{
+                rootIndex = miter.value();
+                miter++;
+            }
+        }
+        //2.处理_allScenes
+        for(int i=0;i<_allViews.count();i++){
+            if(i==rootIndex){
+                _allViews[i]->scene()->clearScene();
+               _allViews[i]->scaleDefault();
+            }
+            else
+                //TODO:此处需要研究一下是否需要对view、scene进行回收
+                _allViews.removeAt(i);
+        }
+    }
 
 Q_SIGNALS:
     //注册完DataModels发送消息
@@ -212,7 +239,8 @@ private:
     //key为当前page的路由，value为page对应的index
     QMap<QString,int> _routeDataMap;
     //保存所有FlowScene用于统一操作
-    std::list<FlowScene*> _allScenes;
+//    QList<FlowScene*> _allScenes;
+    QList<AICCFlowView *> _allViews;
 };
 
 

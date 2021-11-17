@@ -101,6 +101,14 @@ public:
         }
     }
 
+    ///view的缩放复原为原始大小
+    void scaleDefault(){
+        this->setTransformationAnchor(QGraphicsView::AnchorViewCenter);
+        QMatrix q;
+        q.setMatrix(1,this->matrix().m12(),this->matrix().m21(),1,this->matrix().dx(),this->matrix().dy());
+        this->setMatrix(q,false);
+    }
+
     FlowScene *scene() const{
         return _scene;
     }

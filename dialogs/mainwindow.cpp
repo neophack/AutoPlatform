@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->initStackedWidget();
     this->initNodeEditor();
     this->initImportScriptDialog();
-
+    this->initProjectDialog();
 
 }
 
@@ -230,8 +230,18 @@ void MainWindow::initToolbar()
             }
         }
     });
+
+//    connect(ui->pb_modelSettings,&QPushButton::clicked,this,[&](){
+//        qDebug() << ui->sw_flowscene->allViews().count() ;
+        //复原为原始大小
+//        ui->sw_flowscene->allViews()[0]->scaleDefault();
+
+//        ui->sw_flowscene->allViews()[0]->scaleDown();
+//        ui->sw_flowscene->allViews()[0]->scale(1,1);
+//    });
 }
 
+///初始化面包屑导航
 void MainWindow::initBreadcrumbNavigation(){
     QStringList lpath;
     lpath << "root";
@@ -315,6 +325,20 @@ void MainWindow::pbOpenAction(){
     scene->loadFromMemory(wholeFile);
 }
 
+///初始化与项目创建窗口相关的内容
+void MainWindow::initProjectDialog(){
+    connect(projectDialog,&ProjectDialog::projectCreateCompleted,this,[&](bool success){
+        //1:处理面包屑导航
+        QStringList lpath;
+        lpath << "root";
+        ui->l_breadcrumb_navigation->makeNavigationData(lpath);
+        ui->l_breadcrumb_navigation->refreshNavigationView();
+
+        //2:初始化FlowScene
+        ui->sw_flowscene->initDefaultScenes();
+
+    });
+}
 
 ///NodeEditor数据处理部分
 //初始化时初始化主Scene的右键菜单，和NodeTreeDialog的node分类数据
@@ -346,12 +370,13 @@ void MainWindow::initNodeEditor(){
     });
 }
 
+///生成右键菜单
 void MainWindow::registrySceneGenerateNodeMenu(std::list<Invocable> parserResult){
     //2:生成scene的右键node数据,并注册到所有scene中
     std::shared_ptr<DataModelRegistry> registerDataModels = this->registerDataModels(parserResult);
-    std::list<FlowScene *> scenes =  ui->sw_flowscene->allScenes();
-    for(FlowScene *scene:scenes){
-        scene->setRegistry(registerDataModels);
+    QList<AICCFlowView *> views =  ui->sw_flowscene->allViews();
+    for(AICCFlowView *view:views){
+        view->scene()->setRegistry(registerDataModels);
     }
 
     //3:生成NodeTreeDialog的node菜单结构
@@ -399,19 +424,25 @@ std::shared_ptr<DataModelRegistry> MainWindow::registerDataModels(const std::lis
             QString className = squery.value(2).toString();
             auto f = [inv,caption](){
                 std::unique_ptr<InvocableDataModel> p = std::make_unique<InvocableDataModel>(inv);
-                p.get()->setCaption(caption);
+                p->setCaption(caption);
                 return p;
             };
-            ret->registerModel<MyDataModel>(f,className);
+
+            ret->registerModel<InvocableDataModel>(f,className);
         }else{
             auto f = [inv](){
                 std::unique_ptr<InvocableDataModel> p = std::make_unique<InvocableDataModel>(inv);
-                p.get()->setCaption(p.get()->name());
+                p->setCaption(p->name());
                 return p;
             };
-            ret->registerModel<MyDataModel>(f,"Other");
+            ret->registerModel<InvocableDataModel>(f,"Other");
         }
+
     }
+
+//    for(auto const &assoc : ret->registeredModelsCategoryAssociation()){
+//        qDebug() << assoc.first;
+//    }
     return ret;
 }
 
